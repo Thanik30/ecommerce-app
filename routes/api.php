@@ -10,6 +10,7 @@ Route::get('/user', function (Request $request) {
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReviewController;
 
 // สร้าง URL: http://127.0.0.1:8000/api/products
 Route::get('/products', [ProductController::class, 'index']);
@@ -25,4 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/member-info', [AuthController::class, 'profile']); // ดูข้อมูลส่วนตัว
     Route::post('/cart', [OrderController::class, 'addToCart']);    // หยิบใส่ตะกร้า
     Route::get('/cart', [OrderController::class, 'viewCart']);      // ดูตะกร้าสินค้า
+    Route::post('/apply-coupon', [OrderController::class, 'applyCoupon']); // ใช้คูปอง
+    Route::post('/checkout', [OrderController::class, 'checkout']);        // ยืนยันคำสั่งซื้อ
+    Route::post('/reviews', [ReviewController::class, 'store']);           // รีวิวสินค้า
 });

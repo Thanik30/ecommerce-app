@@ -66,4 +66,61 @@ class OrderController extends Controller
 
         return response()->json(['cart' => $cart]);
     }
+
+    // 3. ฟังก์ชันใช้งานคูปองส่วนลด (Promotion Coupons)
+    public function applyCoupon(Request $request)
+    {
+        $request->validate(['code' => 'required|string']);
+        
+        $user = $request->user();
+        $order = Order::where('user_id', $user->id)->where('status', 'pending')->first();
+        
+        if (!$order) {
+            return response()->json(['message' => 'ไม่มีสินค้าในตะกร้า'], 404);
+        }
+
+        // ค้นหาคูปอง (สมมติว่าเรามีการสร้างข้อมูลคูปองไว้ใน DB แล้ว)
+        $coupon = \App\Models\Coupon::where('code', $request->code)->where('is_active', true)->first();
+        
+        if (!$coupon) {
+            return response()->json(['message' => 'คูปองไม่ถูกต้องหรือหมดอายุแล้ว'], 400);
+        }
+
+        // คำนวณส่วนลดตามประเภท (percentage หรือ fixed)
+        $discount = 0;
+        if ($coupon->discount_type == 'percentage') {
+            $discount = ($order->total_amount * $coupon->discount_value) / 100;
+        } else {
+            $discount = $coupon->discount_value;
+        }
+
+        $order->total_amount -= $discount;
+        $order->save();
+
+        return response()->json([
+            'message' => 'ใช้งานคูปองสำเร็จ!',
+            'discount_applied' => $discount,
+            'new_total' => $order->total_amount
+        ]);
+    }
+
+    // 4. ฟังก์ชันยืนยันคำสั่งซื้อ (Checkout)
+    public function checkout(Request $request)
+    {
+        $user = $request->user();
+        $order = Order::where('user_id', $user->id)->where('status', 'pending')->first();
+
+        if (!$order || $order->total_amount == 0) {
+            return response()->json(['message' => 'ไม่สามารถทำรายการได้ ตะกร้าสินค้าว่างเปล่า'], 400);
+        }
+
+        // เปลี่ยนสถานะเป็นชำระเงินแล้ว
+        $order->status = 'paid';
+        $order->save();
+
+        return response()->json([
+            'message' => 'ยืนยันคำสั่งซื้อและชำระเงินสำเร็จ!',
+            'order_id' => $order->id
+        ]);
+    }
 }
