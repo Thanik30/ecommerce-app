@@ -12,6 +12,11 @@ class ProductController extends Controller
     {
         // ดึงข้อมูลสินค้าทั้งหมด และพ่วงข้อมูลหมวดหมู่ (category) มาด้วย
         $products = Product::with('category')->get();
+        // ตัวอย่างการดึงสินค้าทั้งหมด (หน้า Home)
+        $products = Product::with(['images', 'variants'])->get(); 
+
+        // ตัวอย่างการดึงรายละเอียดสินค้า 1 ชิ้น (หน้า Read more)
+        $product = Product::with(['images', 'variants'])->findOrFail($id);
         
         // ส่งข้อมูลกลับไปเป็นรูปแบบ JSON
         return response()->json([
