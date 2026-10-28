@@ -4,28 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Cache;
 use App\Models\User;
+use App\Models\Product;
 
 class AuthController extends Controller
 {
-    private function attachUserMeta(User $user)
-    {
-        $defaultMeta = [
-            'avatar_url' => 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=0066FF&color=fff&bold=true',
-            'real_name' => $user->name,
-            'tutor_alias' => $user->name,
-            'department' => 'สาขาวิศวกรรมคอมพิวเตอร์',
-            'student_id' => '',
-            'gpax' => '',
-        ];
-
-        $savedMeta = Cache::get("user_meta_{$user->id}", []);
-        $user->meta = array_merge($defaultMeta, $savedMeta);
-        return $user;
-    }
-
-    // 1. สมัครสมาชิก
+    // 1. สมัครสมาชิกใหม่
     public function register(Request $request)
     {
         $request->validate([
@@ -34,27 +18,25 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
+        $dept = $request->address ?: 'สาขาวิศวกรรมคอมพิวเตอร์';
+        $defaultAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($request->name) . '&background=0066FF&color=fff&bold=true';
+
         $user = User::create([
             'name' => $request->name,
+            'real_name' => $request->name,
+            'tutor_alias' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone_number' => $request->phone_number,
-            'address' => $request->address ?: 'สาขาวิศวกรรมคอมพิวเตอร์',
+            'address' => $dept,
+            'department' => $dept,
+            'avatar_url' => $defaultAvatar,
             'role' => 'customer'
-        ]);
-
-        Cache::forever("user_meta_{$user->id}", [
-            'avatar_url' => 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=0066FF&color=fff&bold=true',
-            'real_name' => $user->name,
-            'tutor_alias' => $user->name,
-            'department' => $request->address ?: 'สาขาวิศวกรรมคอมพิวเตอร์',
-            'student_id' => '',
-            'gpax' => '',
         ]);
 
         return response()->json([
             'message' => 'สมัครสมาชิกสำเร็จเรียบร้อย!',
-            'user' => $this->attachUserMeta($user)
+            'user' => $user
         ], 201);
     }
 
@@ -78,21 +60,21 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'เข้าสู่ระบบสำเร็จ!',
-            'user' => $this->attachUserMeta($user),
+            'user' => $user,
             'token' => $token
         ]);
     }
 
-    // 3. ดูข้อมูลโปรไฟล์
+    // 3. ดึงข้อมูลโปรไฟล์ปัจจุบัน
     public function profile(Request $request)
     {
         return response()->json([
             'message' => 'ดึงข้อมูลโปรไฟล์สำเร็จ',
-            'user' => $this->attachUserMeta($request->user())
+            'user' => $request->user()
         ]);
     }
 
-    // 4. แก้ไขโปรไฟล์และอัปโหลดรูปภาพโปรไฟล์
+    // 4. แก้ไขโปรไฟล์และอัปโหลดรูปภาพโปรไฟล์ (บันทึกลงตาราง users ถาวร)
     public function updateProfile(Request $request)
     {
         $user = $request->user();
@@ -101,46 +83,44 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'phone_number' => 'nullable|string|max:30',
             'department' => 'nullable|string|max:255',
-            'tutor_alias' => 'nullable|string|max:255',
-            'avatar_image' => 'nullable|image|max:5120',
+            'avatar_image' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif|max:10240',
         ]);
-
-        $meta = Cache::get("user_meta_{$user->id}", []);
 
         if ($request->hasFile('avatar_image')) {
             $file = $request->file('avatar_image');
             $filename = 'avatar_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
             $uploadPath = public_path('uploads/avatars');
             if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+                mkdir($uploadPath, 0775, true);
             }
             $file->move($uploadPath, $filename);
-            $meta['avatar_url'] = '/uploads/avatars/' . $filename;
+            $user->avatar_url = '/uploads/avatars/' . $filename;
         }
 
         $user->name = $request->name;
+        $user->tutor_alias = $request->name;
         $user->phone_number = $request->phone_number;
+
         if ($request->department) {
+            $user->department = $request->department;
             $user->address = $request->department;
-            $meta['department'] = $request->department;
         }
+
         $user->save();
 
-        if ($request->tutor_alias) {
-            $meta['tutor_alias'] = $request->tutor_alias;
-        } else {
-            $meta['tutor_alias'] = $user->name;
-        }
-
-        Cache::forever("user_meta_{$user->id}", $meta);
+        // อัปเดตชื่อผู้สอนและสาขาในคอร์สเรียนที่ผู้ใช้นี้เป็นเจ้าของให้ตรงกันทันที
+        Product::where('owner_email', $user->email)->update([
+            'tutor_name' => $user->tutor_alias,
+            'tutor_department' => $user->department
+        ]);
 
         return response()->json([
-            'message' => 'บันทึกการแก้ไขโปรไฟล์เรียบร้อยแล้ว!',
-            'user' => $this->attachUserMeta($user)
+            'message' => 'บันทึกโปรไฟล์และรูปภาพลงฐานข้อมูลเรียบร้อยแล้ว!',
+            'user' => $user->fresh()
         ]);
     }
 
-    // 5. สมัครและยืนยันตัวตนเพื่อเป็นติวเตอร์ (เก็บทั้งชื่อ-นามสกุลจริง และชื่อนามแฝงติวเตอร์)
+    // 5. ยืนยันตัวตนเพื่อเป็นติวเตอร์ (บันทึกลงตาราง users ถาวร)
     public function applyTutor(Request $request)
     {
         $request->validate([
@@ -151,40 +131,37 @@ class AuthController extends Controller
             'gpax' => 'required|numeric|min:2.00|max:4.00',
             'transcript_url' => 'required|url',
             'phone_number' => 'required|string|max:30',
-            'id_card_image' => 'nullable|image|max:5120',
+            'id_card_image' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:10240',
         ]);
 
         $user = $request->user();
-        $meta = Cache::get("user_meta_{$user->id}", []);
 
         if ($request->hasFile('id_card_image')) {
             $file = $request->file('id_card_image');
             $filename = 'tutor_id_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
             $uploadPath = public_path('uploads/tutors');
             if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+                mkdir($uploadPath, 0775, true);
             }
             $file->move($uploadPath, $filename);
+            $user->id_card_url = '/uploads/tutors/' . $filename;
         }
 
-        $meta['real_name'] = $request->real_name;
-        $meta['tutor_alias'] = $request->tutor_alias;
-        $meta['department'] = $request->department;
-        $meta['student_id'] = $request->student_id;
-        $meta['gpax'] = $request->gpax;
-
-        Cache::forever("user_meta_{$user->id}", $meta);
-
-        // อัปเดตชื่อที่แสดงให้เป็นนามแฝงติวเตอร์ และเปลี่ยนสถานะเป็น tutor
+        $user->real_name = $request->real_name;
+        $user->tutor_alias = $request->tutor_alias;
         $user->name = $request->tutor_alias;
-        $user->phone_number = $request->phone_number;
+        $user->student_id = $request->student_id;
+        $user->department = $request->department;
         $user->address = $request->department;
+        $user->gpax = $request->gpax;
+        $user->transcript_url = $request->transcript_url;
+        $user->phone_number = $request->phone_number;
         $user->role = 'tutor';
         $user->save();
 
         return response()->json([
-            'message' => 'ยืนยันตัวตนสำเร็จ! คุณได้รับสิทธิ์เป็นติวเตอร์ในชื่อ "' . $request->tutor_alias . '" เรียบร้อยแล้ว',
-            'user' => $this->attachUserMeta($user)
+            'message' => 'ยืนยันตัวตนสำเร็จ! คุณได้รับสิทธิ์เป็นติวเตอร์ในชื่อ "' . $user->tutor_alias . '" เรียบร้อยแล้ว',
+            'user' => $user->fresh()
         ]);
     }
 }

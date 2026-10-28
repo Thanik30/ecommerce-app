@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductImage;
@@ -33,7 +31,7 @@ class ProductController extends Controller
 
         if (!$user || $user->role !== 'tutor') {
             return response()->json([
-                'message' => 'เฉพาะผู้ที่ผ่านการสมัครและยืนยันตัวตนเป็นติวเตอร์แล้วเท่านั้น จึงจะสามารถลงขายคอร์สเรียนได้'
+                'message' => 'เฉพาะผู้ที่ผ่านการยืนยันตัวตนเป็นติวเตอร์แล้วเท่านั้น จึงจะสามารถลงขายคอร์สเรียนได้'
             ], 403);
         }
 
@@ -47,36 +45,44 @@ class ProductController extends Controller
             'description' => 'required|string',
             'syllabus' => 'required|string',
             'pdf_url' => 'required|url',
-            'cover_image' => 'required|image|max:5120',
+            'cover_image' => 'required|file|mimes:jpg,jpeg,png,webp|max:10240',
+            'course_video' => 'required|file|mimes:mp4,webm,mov,ogg|max:204800', // รองรับไฟล์วิดีโอสูงสุด 200MB
         ]);
 
         // จับคู่หมวดหมู่สาขาวิชาอัตโนมัติจากรหัสวิชา 3 หลักแรก
         $sku = trim($request->sku);
         $prefix = substr($sku, 0, 3);
-        $category = Category::where('name', 'like', "%({$prefix}xxx)%")->first();
-        if (!$category) {
-            $category = Category::first();
-        }
+        $category = Category::where('name', 'like', "%({$prefix}xxx)%")->first() ?: Category::first();
 
-        // บันทึกรูปปกที่อัปโหลด
+        // 1. บันทึกไฟล์รูปปกคอร์ส
         $imageUrl = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=900&q=80';
         if ($request->hasFile('cover_image')) {
-            $file = $request->file('cover_image');
-            $filename = 'course_' . $sku . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $uploadPath = public_path('uploads/courses');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+            $imgFile = $request->file('cover_image');
+            $imgName = 'cover_' . $sku . '_' . time() . '.' . $imgFile->getClientOriginalExtension();
+            $imgPath = public_path('uploads/courses');
+            if (!file_exists($imgPath)) {
+                mkdir($imgPath, 0775, true);
             }
-            $file->move($uploadPath, $filename);
-            $imageUrl = '/uploads/courses/' . $filename;
+            $imgFile->move($imgPath, $imgName);
+            $imageUrl = '/uploads/courses/' . $imgName;
         }
 
-        // ดึงชื่อนามแฝงและสาขาวิชาจากโปรไฟล์ติวเตอร์โดยตรง
-        $userMeta = Cache::get("user_meta_{$user->id}", []);
-        $tutorAlias = $userMeta['tutor_alias'] ?? $user->name;
-        $tutorDept = $userMeta['department'] ?? ($user->address ?: 'สาขาวิศวกรรมคอมพิวเตอร์');
+        // 2. บันทึกไฟล์คลิปวิดีโอการสอน
+        $videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+        if ($request->hasFile('course_video')) {
+            $vidFile = $request->file('course_video');
+            $vidName = 'video_' . $sku . '_' . time() . '.' . $vidFile->getClientOriginalExtension();
+            $vidPath = public_path('uploads/videos');
+            if (!file_exists($vidPath)) {
+                mkdir($vidPath, 0775, true);
+            }
+            $vidFile->move($vidPath, $vidName);
+            $videoUrl = '/uploads/videos/' . $vidName;
+        }
 
-        Model::unguard();
+        $tutorAlias = $user->tutor_alias ?: $user->name;
+        $tutorDept = $user->department ?: ($user->address ?: 'สาขาวิศวกรรมคอมพิวเตอร์');
+        $examType = $request->exam_type ?: 'Midterm + Final';
 
         $product = Product::create([
             'sku' => $sku,
@@ -84,6 +90,16 @@ class ProductController extends Controller
             'category_id' => $category->id,
             'price' => $request->price,
             'description' => $request->description,
+            'video_url' => $videoUrl,
+            'pdf_url' => $request->pdf_url,
+            'hours_num' => (float) $request->hours_number,
+            'duration' => $request->duration,
+            'exam_type' => $examType,
+            'suitable_for' => $request->suitable_for,
+            'syllabus' => $request->syllabus,
+            'tutor_name' => $tutorAlias,
+            'tutor_department' => $tutorDept,
+            'owner_email' => $user->email,
         ]);
 
         ProductImage::create([
@@ -91,27 +107,24 @@ class ProductController extends Controller
             'image_url' => $imageUrl,
         ]);
 
-        $courseMetadata = json_encode([
-            'hours_num' => (float) $request->hours_number,
-            'duration' => $request->duration,
-            'tutor_department' => $tutorDept,
-            'suitable_for' => $request->suitable_for,
-            'syllabus' => $request->syllabus,
-            'pdf_url' => $request->pdf_url,
-            'exam_type' => $request->exam_type ?: 'Midterm + Final',
-        ], JSON_UNESCAPED_UNICODE);
-
         ProductVariant::create([
             'product_id' => $product->id,
             'size' => $tutorAlias . ' | OWNER:' . $user->email,
-            'color' => $courseMetadata,
+            'color' => json_encode([
+                'hours_num' => (float) $request->hours_number,
+                'duration' => $request->duration,
+                'tutor_department' => $tutorDept,
+                'suitable_for' => $request->suitable_for,
+                'syllabus' => $request->syllabus,
+                'pdf_url' => $request->pdf_url,
+                'video_url' => $videoUrl,
+                'exam_type' => $examType,
+            ], JSON_UNESCAPED_UNICODE),
             'stock_quantity' => 999,
         ]);
 
-        Model::reguard();
-
         return response()->json([
-            'message' => 'เปิดขายคอร์สเรียนสำเร็จ! (หากต้องการแก้ไขข้อมูลภายหลัง กรุณาติดต่อแอดมิน)',
+            'message' => 'อัปโหลดคลิปวิดีโอและเปิดขายคอร์สเรียนสำเร็จ!',
             'data' => $product->load(['category', 'images', 'variants', 'reviews.user'])
         ], 201);
     }
