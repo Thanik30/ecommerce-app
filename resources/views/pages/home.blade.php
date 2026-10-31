@@ -79,7 +79,10 @@
     }
 
     async function fetchCourses() {
-        const res = await fetch('/api/products', { headers: { 'Accept': 'application/json' } });
+        const res = await fetch('/api/products', { 
+            headers: { 'Accept': 'application/json' },
+            credentials: 'include' // เพิ่มบรรทัดนี้
+        });
         const json = await res.json();
         allCourses = json.data || [];
         allCategories = json.categories || [];
@@ -220,7 +223,7 @@
     };
 
     document.addEventListener('DOMContentLoaded', async () => {
-        await fetchPurchasedIds();
+        if (currentUser) await fetchPurchasedIds();
         await fetchCourses();
     });
 </script>

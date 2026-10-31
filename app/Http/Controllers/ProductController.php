@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -46,38 +47,31 @@ class ProductController extends Controller
             'syllabus' => 'required|string',
             'pdf_url' => 'required|url',
             'cover_image' => 'required|file|mimes:jpg,jpeg,png,webp|max:10240',
-            'course_video' => 'required|file|mimes:mp4,webm,mov,ogg|max:204800', // รองรับไฟล์วิดีโอสูงสุด 200MB
+            'course_video' => 'required|file|mimes:mp4,webm,mov,ogg|max:204800', 
         ]);
 
-        // จับคู่หมวดหมู่สาขาวิชาอัตโนมัติจากรหัสวิชา 3 หลักแรก
         $sku = trim($request->sku);
         $prefix = substr($sku, 0, 3);
-        $category = Category::where('name', 'like', "%({$prefix}xxx)%")->first() ?: Category::first();
 
-        // 1. บันทึกไฟล์รูปปกคอร์ส
-        $imageUrl = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=900&q=80';
-        if ($request->hasFile('cover_image')) {
-            $imgFile = $request->file('cover_image');
-            $imgName = 'cover_' . $sku . '_' . time() . '.' . $imgFile->getClientOriginalExtension();
-            $imgPath = public_path('uploads/courses');
-            if (!file_exists($imgPath)) {
-                mkdir($imgPath, 0775, true);
-            }
-            $imgFile->move($imgPath, $imgName);
-            $imageUrl = '/uploads/courses/' . $imgName;
+        // แก้ไข: ค้นหาหมวดหมู่ ถ้าไม่พบให้ใช้ "หมวดหมู่อื่นๆ"
+        $category = Category::where('name', 'like', "%({$prefix}xxx)%")->first();
+
+        if (!$category) {
+            $category = Category::where('name', 'like', '%หมวดหมู่อื่นๆ%')->first();
         }
 
-        // 2. บันทึกไฟล์คลิปวิดีโอการสอน
+        $categoryId = $category ? $category->id : 1;
+
+        $imageUrl = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97...';
+        if ($request->hasFile('cover_image')) {
+            $imgPath = $request->file('cover_image')->store('courses', 'public');
+            $imageUrl = '/storage/' . $imgPath;
+        }
+
         $videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
         if ($request->hasFile('course_video')) {
-            $vidFile = $request->file('course_video');
-            $vidName = 'video_' . $sku . '_' . time() . '.' . $vidFile->getClientOriginalExtension();
-            $vidPath = public_path('uploads/videos');
-            if (!file_exists($vidPath)) {
-                mkdir($vidPath, 0775, true);
-            }
-            $vidFile->move($vidPath, $vidName);
-            $videoUrl = '/uploads/videos/' . $vidName;
+            $vidPath = $request->file('course_video')->store('videos', 'public');
+            $videoUrl = '/storage/' . $vidPath;
         }
 
         $tutorAlias = $user->tutor_alias ?: $user->name;
@@ -87,7 +81,7 @@ class ProductController extends Controller
         $product = Product::create([
             'sku' => $sku,
             'name' => $request->name,
-            'category_id' => $category->id,
+            'category_id' => $categoryId, // แก้ไข: ใช้ตัวแปร $categoryId
             'price' => $request->price,
             'description' => $request->description,
             'video_url' => $videoUrl,

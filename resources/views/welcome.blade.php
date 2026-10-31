@@ -59,12 +59,9 @@
         </div>
     </div>
 
-    <!-- ==========================================
-         NAVBAR (Responsive + สลับภาษา TH/EN + รูปโปรไฟล์)
-         ========================================== -->
+    <!-- NAVBAR -->
     <header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-2xs">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-            <!-- โลโก้ -->
             <button onclick="switchMainView('catalog')" class="flex items-center gap-2.5 text-left shrink-0 cursor-pointer">
                 <div class="w-9 h-9 rounded-lg bg-academic-blue flex items-center justify-center text-white font-bold text-lg">
                     E
@@ -75,113 +72,39 @@
                 </div>
             </button>
 
-            <!-- เมนูหลักตรงกลาง (Desktop) -->
             <nav class="hidden lg:flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-                <button
-                    id="navTabCatalog"
-                    onclick="switchMainView('catalog')"
-                    class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer bg-white text-academic-blue shadow-xs"
-                    data-i18n="nav_search_courses"
-                >
-                    ค้นหาคอร์สเรียน
-                </button>
-                <button
-                    id="navTabMyCourses"
-                    onclick="switchMainView('my-courses')"
-                    class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer text-slate-600 hover:text-slate-900 flex items-center gap-1.5"
-                >
+                <button id="navTabCatalog" onclick="switchMainView('catalog')" class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer bg-white text-academic-blue shadow-xs" data-i18n="nav_search_courses">ค้นหาคอร์สเรียน</button>
+                <button id="navTabMyCourses" onclick="switchMainView('my-courses')" class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
                     <span data-i18n="nav_my_courses">คอร์สของฉัน</span>
                     <span id="myCoursesCountBadge" class="px-1.5 py-0.2 rounded-full bg-academic-blue/10 text-academic-blue text-xs font-semibold">0</span>
                 </button>
-
-                <!-- ปุ่มสมัครเป็นติวเตอร์ (แสดงเฉพาะคนที่ยังไม่ได้เป็นติวเตอร์) -->
-                <button
-                    id="navBtnApplyTutor"
-                    onclick="openTutorApplicationModal()"
-                    class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer text-amber-700 hover:bg-amber-50"
-                    data-i18n="nav_apply_tutor"
-                >
-                    สมัครเป็นติวเตอร์
-                </button>
-
-                <!-- ปุ่มลงขายคอร์สเรียน (แสดงเฉพาะติวเตอร์) -->
-                <button
-                    id="navBtnCreateCourse"
-                    onclick="openCreateCourseModal()"
-                    class="hidden whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-semibold transition cursor-pointer text-emerald-700 bg-emerald-50 hover:bg-emerald-100"
-                    data-i18n="nav_create_course"
-                >
-                    + ลงขายคอร์สเรียน
-                </button>
-
-                <button
-                    onclick="openContactAdminModal('ติดต่อแอดมิน')"
-                    class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer text-slate-600 hover:text-slate-900"
-                    data-i18n="nav_contact_admin"
-                >
-                    ติดต่อแอดมิน
-                </button>
+                <button id="navBtnApplyTutor" onclick="openTutorApplicationModal()" class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer text-amber-700 hover:bg-amber-50" data-i18n="nav_apply_tutor">สมัครเป็นติวเตอร์</button>
+                <button id="navBtnCreateCourse" onclick="openCreateCourseModal()" class="hidden whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-semibold transition cursor-pointer text-emerald-700 bg-emerald-50 hover:bg-emerald-100" data-i18n="nav_create_course">+ ลงขายคอร์สเรียน</button>
+                <button onclick="openContactAdminModal('ติดต่อแอดมิน')" class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer text-slate-600 hover:text-slate-900" data-i18n="nav_contact_admin">ติดต่อแอดมิน</button>
             </nav>
 
-            <!-- ปุ่มด้านขวา (เปลี่ยนภาษา + ตะกร้า + โปรไฟล์) -->
             <div class="flex items-center gap-2 shrink-0">
-                <!-- ปุ่มสลับภาษา TH / EN -->
-                <button
-                    onclick="toggleLanguage()"
-                    id="langSwitcherBtn"
-                    class="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-academic-blue bg-slate-50 text-slate-700 text-xs font-bold transition cursor-pointer"
-                    title="Switch Language (TH/EN)"
-                >
-                    🌐 TH
-                </button>
-
-                <!-- ปุ่มตะกร้า -->
-                <button
-                    onclick="openCartDrawer()"
-                    class="whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 hover:border-academic-blue bg-white text-slate-700 text-xs sm:text-sm font-medium transition cursor-pointer"
-                >
+                <button onclick="toggleLanguage()" id="langSwitcherBtn" class="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-academic-blue bg-slate-50 text-slate-700 text-xs font-bold transition cursor-pointer" title="Switch Language (TH/EN)">🌐 TH</button>
+                <button onclick="openCartDrawer()" class="whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 hover:border-academic-blue bg-white text-slate-700 text-xs sm:text-sm font-medium transition cursor-pointer">
                     <svg class="w-4 h-4 text-academic-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                     <span class="hidden sm:inline" data-i18n="nav_cart">ตะกร้า</span>
                     <span id="cartBadge" class="px-1.5 py-0.5 text-xs rounded-full bg-academic-blue text-white font-semibold leading-none">0</span>
                 </button>
-
-                <!-- สถานะยังไม่ล็อกอิน -->
                 <div id="guestActions" class="flex items-center gap-2">
-                    <button
-                        onclick="openAuthModal('login')"
-                        class="whitespace-nowrap px-4 py-2 rounded-lg bg-academic-blue hover:bg-academic-blueHover text-white font-medium text-xs sm:text-sm transition cursor-pointer"
-                        data-i18n="nav_login"
-                    >
-                        เข้าสู่ระบบ
-                    </button>
+                    <button onclick="openAuthModal('login')" class="whitespace-nowrap px-4 py-2 rounded-lg bg-academic-blue hover:bg-academic-blueHover text-white font-medium text-xs sm:text-sm transition cursor-pointer" data-i18n="nav_login">เข้าสู่ระบบ</button>
                 </div>
-
-                <!-- สถานะล็อกอินแล้ว (แสดงรูปโปรไฟล์ + กดแก้ไขโปรไฟล์ได้) -->
                 <div id="userActions" class="hidden items-center gap-1.5">
-                    <button
-                        onclick="openProfileModal()"
-                        class="whitespace-nowrap inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-medium transition cursor-pointer border border-slate-200"
-                        title="คลิกเพื่อแก้ไขโปรไฟล์"
-                    >
+                    <button onclick="openProfileModal()" class="whitespace-nowrap inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-medium transition cursor-pointer border border-slate-200" title="คลิกเพื่อแก้ไขโปรไฟล์">
                         <img id="navUserAvatar" src="" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-white shadow-2xs">
                         <span id="navUserName" class="max-w-[90px] sm:max-w-[120px] truncate">นักศึกษา</span>
                         <span id="navTutorBadge" class="hidden px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-bold">TUTOR</span>
                     </button>
-                    <button
-                        onclick="logout()"
-                        title="ออกจากระบบ"
-                        class="whitespace-nowrap px-2.5 py-2 rounded-lg border border-slate-200 hover:bg-rose-50 hover:text-rose-600 text-slate-500 text-xs font-medium transition cursor-pointer"
-                        data-i18n="nav_logout"
-                    >
-                        ออก
-                    </button>
+                    <button onclick="logout()" title="ออกจากระบบ" class="whitespace-nowrap px-2.5 py-2 rounded-lg border border-slate-200 hover:bg-rose-50 hover:text-rose-600 text-slate-500 text-xs font-medium transition cursor-pointer" data-i18n="nav_logout">ออก</button>
                 </div>
             </div>
         </div>
-
-        <!-- แถบเมนูสำหรับจอมือถือและแท็บเล็ต (Responsive Bar) -->
         <div class="lg:hidden border-t border-slate-100 px-3 py-2 flex items-center justify-around bg-slate-50 text-xs font-medium overflow-x-auto gap-2">
             <button onclick="switchMainView('catalog')" class="whitespace-nowrap py-1 text-academic-blue font-semibold" data-i18n="nav_search_courses">ค้นหาคอร์สเรียน</button>
             <button onclick="switchMainView('my-courses')" class="whitespace-nowrap py-1 text-slate-600" data-i18n="nav_my_courses">คอร์สของฉัน</button>
@@ -190,54 +113,23 @@
         </div>
     </header>
 
-    <!-- ==========================================================
-         VIEW 1: หน้าค้นหารหัสวิชาและแยกหมวดหมู่ตามสาขาวิศวกรรมศาสตร์
-         ========================================================== -->
+    <!-- VIEW 1: CATALOG -->
     <div id="viewCatalog" class="flex-1">
-
-        <!-- กรอบค้นหารหัสวิชา 6 หลัก -->
         <section class="bg-white border-b border-slate-200">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 py-7 sm:py-9">
                 <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-8">
                     <div class="max-w-3xl mx-auto text-center space-y-3.5">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-academic-blue text-xs font-semibold" data-i18n="hero_badge">
-                            แพลตฟอร์มคอร์สเรียนคณะวิศวกรรมศาสตร์
-                        </span>
-                        <h1 class="text-xl sm:text-3xl font-bold text-slate-900" data-i18n="hero_title">
-                            ค้นหาคอร์สติวและสรุปเนื้อหาจากรหัสวิชา 6 หลัก
-                        </h1>
-                        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed" data-i18n="hero_subtitle">
-                            เรียนกับติวเตอร์รุ่นพี่ในคณะวิศวกรรมศาสตร์ที่ผ่านการยืนยันตัวตนและผลการเรียน พร้อมเอกสารประกอบการเรียน PDF
-                        </p>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-academic-blue text-xs font-semibold" data-i18n="hero_badge">แพลตฟอร์มคอร์สเรียนคณะวิศวกรรมศาสตร์</span>
+                        <h1 class="text-xl sm:text-3xl font-bold text-slate-900" data-i18n="hero_title">ค้นหาคอร์สติวและสรุปเนื้อหาจากรหัสวิชา 6 หลัก</h1>
+                        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed" data-i18n="hero_subtitle">เรียนกับติวเตอร์รุ่นพี่ในคณะวิศวกรรมศาสตร์ที่ผ่านการยืนยันตัวตนและผลการเรียน พร้อมเอกสารประกอบการเรียน PDF</p>
 
-                        <!-- ช่องค้นหา -->
                         <div class="pt-2 flex flex-col sm:flex-row gap-2.5 max-w-2xl mx-auto">
                             <div class="relative flex-1">
-                                <input
-                                    id="courseCodeSearchInput"
-                                    type="text"
-                                    oninput="handleSearchInput(this.value)"
-                                    placeholder="พิมพ์รหัสวิชา 6 หลัก เช่น 259104, 251201, 252211, 261342..."
-                                    class="w-full pl-4 pr-16 py-3 rounded-xl bg-white border border-slate-300 focus:border-academic-blue focus:outline-none text-sm text-slate-800"
-                                >
-                                <button
-                                    id="clearSearchBtn"
-                                    onclick="setQuickSearch('')"
-                                    class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-medium cursor-pointer"
-                                >
-                                    ✕
-                                </button>
+                                <input id="courseCodeSearchInput" type="text" oninput="handleSearchInput(this.value)" placeholder="พิมพ์รหัสวิชา 6 หลัก เช่น 259104, 251201, 252211, 261342..." class="w-full pl-4 pr-16 py-3 rounded-xl bg-white border border-slate-300 focus:border-academic-blue focus:outline-none text-sm text-slate-800">
+                                <button id="clearSearchBtn" onclick="setQuickSearch('')" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-medium cursor-pointer">✕</button>
                             </div>
-                            <button
-                                onclick="renderCourses()"
-                                class="px-6 py-3 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-sm transition cursor-pointer shrink-0"
-                                data-i18n="btn_search"
-                            >
-                                ค้นหาวิชา
-                            </button>
+                            <button onclick="renderCourses()" class="px-6 py-3 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-sm transition cursor-pointer shrink-0" data-i18n="btn_search">ค้นหาวิชา</button>
                         </div>
-
-                        <!-- ปุ่มรหัสวิชายอดนิยม -->
                         <div class="pt-1 flex flex-wrap items-center justify-center gap-2 text-xs">
                             <span class="text-slate-500" data-i18n="popular_codes">รหัสวิชายอดนิยม:</span>
                             <button onclick="setQuickSearch('259104')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-academic-blue hover:text-academic-blue text-slate-700 font-medium transition cursor-pointer">259104</button>
@@ -252,7 +144,6 @@
             </div>
         </section>
 
-        <!-- ส่วนเลือกสาขาวิชา และการ์ดคอร์สเรียน -->
         <section class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6">
             <div class="bg-white border border-slate-200 rounded-2xl p-5 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -262,36 +153,22 @@
                     </div>
                     <span id="courseCountText" class="text-xs text-slate-500 font-medium"></span>
                 </div>
-
-                <!-- ปุ่มสาขาวิชาเรียงแบบ Flex-Wrap สะอาดตา -->
                 <div id="categoryFilterBar" class="flex flex-wrap items-center gap-2"></div>
             </div>
-
-            <!-- กริดแสดงการ์ดคอร์ส (Responsive 1 / 2 / 3 คอลัมน์) -->
             <div id="coursesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
     </div>
 
-    <!-- ==========================================================
-         VIEW 2: หน้ารายละเอียดคอร์สเรียน (ตัด Component ที่ซ้ำซ้อนออก + ปุ่มติดต่อผู้สอน)
-         ========================================================== -->
+    <!-- VIEW 2: COURSE DETAIL -->
     <div id="viewCourseDetail" class="hidden flex-1 bg-white">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-
             <div class="mb-6">
-                <button
-                    onclick="switchMainView('catalog')"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs sm:text-sm font-medium transition cursor-pointer"
-                    data-i18n="btn_back_catalog"
-                >
+                <button onclick="switchMainView('catalog')" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs sm:text-sm font-medium transition cursor-pointer" data-i18n="btn_back_catalog">
                     ← ย้อนกลับไปหน้ารวมคอร์สเรียน
                 </button>
             </div>
-
             <div class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-10 shadow-xs">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-
-                    <!-- คอลัมน์ซ้าย: รูปปก + สถิติ 2 ช่อง (ชั่วโมงคอร์ส & อายุคอร์สเรียน) -->
                     <div class="lg:col-span-5 flex flex-col items-center space-y-5">
                         <div class="w-60 sm:w-72 bg-white p-3 rounded-2xl border border-slate-200 book-cover-shadow">
                             <div class="relative aspect-[3/4] rounded-xl overflow-hidden bg-slate-900">
@@ -309,85 +186,51 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- แสดงเฉพาะ 2 กล่องสถิติ: ชั่วโมงคอร์ส และ อายุคอร์สเรียน (ตัดชั่วโมงที่เรียนได้ออกตามที่สั่ง) -->
                         <div class="w-full grid grid-cols-2 gap-3 pt-1 text-center">
                             <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col items-center">
-                                <svg class="w-7 h-7 text-academic-blue mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <circle cx="12" cy="13" r="8"/><path stroke-linecap="round" d="M12 9v4l2.5 2.5M9 2h6"/>
-                                </svg>
+                                <svg class="w-7 h-7 text-academic-blue mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path stroke-linecap="round" d="M12 9v4l2.5 2.5M9 2h6"/></svg>
                                 <span id="detailStatHours" class="text-sm font-bold text-slate-800">20 ชั่วโมง</span>
                                 <span class="text-xs text-slate-500" data-i18n="label_course_hours">ชั่วโมงคอร์ส</span>
                             </div>
                             <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col items-center">
-                                <svg class="w-7 h-7 text-academic-blue mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <rect x="3" y="4" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/>
-                                </svg>
+                                <svg class="w-7 h-7 text-academic-blue mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/></svg>
                                 <span id="detailStatDuration" class="text-sm font-bold text-slate-800">12 เดือน</span>
                                 <span class="text-xs text-slate-500" data-i18n="label_course_duration">อายุคอร์สเรียน</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- คอลัมน์ขวา: รายละเอียดคอร์ส + ราคาขายจริง + ปุ่มสั่งซื้อ & ปุ่มติดต่อผู้สอน -->
                     <div class="lg:col-span-7 space-y-5">
                         <div class="space-y-2">
                             <div class="flex flex-wrap items-center gap-2">
-                                <span id="detailBadgeSku" class="px-3 py-1 rounded-md bg-blue-50 text-academic-blue font-bold text-xs border border-blue-200">รหัสวิชา 259104</span>
-                                <span id="detailBadgeCat" class="px-3 py-1 rounded-md bg-slate-100 text-slate-700 font-medium text-xs">หมวดวิชา</span>
+                                <span id="detailBadgeSku" class="px-3 py-1 rounded-md bg-blue-50 text-academic-blue font-bold text-xs border border-blue-200"></span>
+                                <span id="detailBadgeCat" class="px-3 py-1 rounded-md bg-slate-100 text-slate-700 font-medium text-xs"></span>
                                 <span id="detailPurchasedStatusBadge" class="hidden px-3 py-1 rounded-md bg-emerald-100 text-emerald-800 font-bold text-xs">✓ คุณซื้อคอร์สเรียนนี้แล้ว</span>
                             </div>
                             <h1 id="detailTitle" class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug pt-1"></h1>
                         </div>
-
-                        <!-- แสดงราคาขายจริงราคาเดียว (ไม่มีราคาขีดฆ่า) -->
                         <div>
-                            <div id="detailPrice" class="text-3xl font-bold text-academic-blue">490 บาท</div>
+                            <div id="detailPrice" class="text-3xl font-bold text-academic-blue"></div>
                         </div>
-
                         <div class="space-y-4 text-sm sm:text-base text-slate-700 text-body-thai">
-                            <p>
-                                <strong class="underline text-slate-900 font-semibold" data-i18n="label_suitable_for">เหมาะสำหรับ :</strong>
-                                <span id="detailSuitableFor"></span>
-                            </p>
-                            <p>
-                                <strong class="underline text-slate-900 font-semibold" data-i18n="label_course_desc">รายละเอียดคอร์ส :</strong>
-                                <span id="detailDescription"></span>
-                            </p>
+                            <p><strong class="underline text-slate-900 font-semibold" data-i18n="label_suitable_for">เหมาะสำหรับ :</strong><span id="detailSuitableFor"></span></p>
+                            <p><strong class="underline text-slate-900 font-semibold" data-i18n="label_course_desc">รายละเอียดคอร์ส :</strong><span id="detailDescription"></span></p>
                         </div>
-
                         <hr class="border-slate-200">
-
                         <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-700">
                             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-academic-blue text-white text-xs font-bold">✓</span>
                             <span class="font-medium text-slate-700" data-i18n="pdf_included_note">รวมลิงก์ดาวน์โหลดไฟล์เอกสารประกอบการเรียน (PDF) พร้อมเข้าเรียนทันทีหลังชำระเงิน</span>
                         </div>
-
-                        <!-- ปุ่มสั่งซื้อ + ปุ่มติดต่อผู้สอน -->
                         <div class="flex flex-wrap items-center gap-3 pt-2">
-                            <button
-                                id="detailBuyBtn"
-                                class="px-8 py-3 rounded-full bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-sm sm:text-base shadow-md shadow-blue-500/20 transition cursor-pointer"
-                            >
-                                สั่งซื้อคอร์สเรียน
-                            </button>
-                            <button
-                                onclick="openContactTutorModal()"
-                                class="px-6 py-3 rounded-full border-2 border-academic-blue text-academic-blue hover:bg-blue-50 font-semibold text-sm sm:text-base transition cursor-pointer"
-                                data-i18n="btn_contact_tutor"
-                            >
-                                💬 ติดต่อผู้สอน
-                            </button>
+                            <button id="detailBuyBtn" class="px-8 py-3 rounded-full bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-sm sm:text-base shadow-md shadow-blue-500/20 transition cursor-pointer">สั่งซื้อคอร์สเรียน</button>
+                            <button onclick="openContactTutorModal()" class="px-6 py-3 rounded-full border-2 border-academic-blue text-academic-blue hover:bg-blue-50 font-semibold text-sm sm:text-base transition cursor-pointer" data-i18n="btn_contact_tutor">💬 ติดต่อผู้สอน</button>
                         </div>
                     </div>
                 </div>
 
                 <hr class="my-10 border-slate-200">
 
-                <!-- ส่วนล่าง 2 คอลัมน์: | รายละเอียดหัวข้อบทเรียน และ | ผู้สอน (แสดงสาขาที่เรียนของผู้สอน) -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-                    <!-- ซ้าย: หัวข้อบทเรียน -->
                     <div class="lg:col-span-6 space-y-4">
                         <div class="flex items-center gap-2.5">
                             <div class="w-1 h-6 bg-academic-blue rounded-full"></div>
@@ -396,36 +239,22 @@
                         <div id="detailSyllabusList" class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 text-sm text-slate-700"></div>
                     </div>
 
-                    <!-- ขวา: ข้อมูลผู้สอน (แสดงชื่อนามแฝง + สาขาวิชาที่เรียน) และรีวิว -->
                     <div class="lg:col-span-6 space-y-4">
                         <div class="flex items-center gap-2.5">
                             <div class="w-1 h-6 bg-academic-blue rounded-full"></div>
                             <h3 class="text-base sm:text-lg font-bold text-slate-900" data-i18n="section_instructor_reviews">ข้อมูลผู้สอนและรีวิวจากผู้เรียน</h3>
                         </div>
-
-                        <!-- การ์ดผู้สอน แสดงสาขาที่เรียนแทนคำว่าติวเตอร์คณะวิศวกรรมศาสตร์ -->
                         <div class="bg-blue-50/60 border border-blue-200 rounded-2xl p-4 flex items-center justify-between gap-4">
                             <div class="flex items-center gap-3.5">
-                                <div class="w-12 h-12 rounded-xl bg-academic-blue text-white flex items-center justify-center font-bold text-sm shrink-0">
-                                    TUTOR
-                                </div>
+                                <div class="w-12 h-12 rounded-xl bg-academic-blue text-white flex items-center justify-center font-bold text-sm shrink-0">TUTOR</div>
                                 <div>
                                     <div id="detailBottomTutor" class="text-base font-bold text-slate-900"></div>
-                                    <!-- แสดงสาขาที่เรียนของผู้สอน -->
-                                    <div id="detailBottomTutorDept" class="text-xs font-semibold text-academic-blue mt-0.5">สาขาวิศวกรรมคอมพิวเตอร์</div>
+                                    <div id="detailBottomTutorDept" class="text-xs font-semibold text-academic-blue mt-0.5"></div>
                                 </div>
                             </div>
-                            <button
-                                onclick="openContactTutorModal()"
-                                class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-academic-blue border border-blue-200 text-xs font-semibold transition cursor-pointer shrink-0"
-                                data-i18n="btn_contact_tutor"
-                            >
-                                💬 ติดต่อผู้สอน
-                            </button>
+                            <button onclick="openContactTutorModal()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-academic-blue border border-blue-200 text-xs font-semibold transition cursor-pointer shrink-0" data-i18n="btn_contact_tutor">💬 ติดต่อผู้สอน</button>
                         </div>
-
                         <div id="detailReviewsList" class="space-y-2.5 max-h-48 overflow-y-auto pr-1"></div>
-
                         <form onsubmit="submitReview(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
                             <div class="flex items-center justify-between gap-2">
                                 <span class="text-xs font-semibold text-slate-700" data-i18n="write_review_label">เขียนรีวิวให้คอร์สเรียนนี้:</span>
@@ -438,31 +267,19 @@
                                 </select>
                             </div>
                             <div class="flex gap-2">
-                                <input
-                                    id="reviewComment"
-                                    type="text"
-                                    required
-                                    placeholder="แสดงความคิดเห็นหลังเรียน..."
-                                    class="flex-1 px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm focus:outline-none focus:border-academic-blue"
-                                >
-                                <button type="submit" class="px-4 py-2 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-xs sm:text-sm transition cursor-pointer shrink-0">
-                                    ส่งรีวิว
-                                </button>
+                                <input id="reviewComment" type="text" required placeholder="แสดงความคิดเห็นหลังเรียน..." class="flex-1 px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm focus:outline-none focus:border-academic-blue">
+                                <button type="submit" class="px-4 py-2 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-xs sm:text-sm transition cursor-pointer shrink-0">ส่งรีวิว</button>
                             </div>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ==========================================================
-         VIEW 3: หน้า "คอร์สของฉัน" (คอร์สที่ซื้อแล้ว & คลิปสอนที่ฉันลงขาย)
-         ========================================================== -->
+    <!-- VIEW 3: MY COURSES -->
     <div id="viewMyCourses" class="hidden flex-1">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-
             <div class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                     <img id="myCoursesAvatar" src="" alt="Profile" class="w-14 h-14 rounded-full object-cover border-2 border-academic-blue">
@@ -475,38 +292,14 @@
                     </div>
                 </div>
                 <div class="flex flex-wrap items-center gap-2.5">
-                    <button
-                        onclick="openProfileModal()"
-                        class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition cursor-pointer"
-                        data-i18n="btn_edit_profile"
-                    >
-                        ⚙️ แก้ไขโปรไฟล์ / รูปภาพ
-                    </button>
-                    <button
-                        id="myCoursesActionBtn"
-                        onclick="handleTutorActionClick()"
-                        class="px-4 py-2 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-xs sm:text-sm transition cursor-pointer"
-                    >
-                        สมัครเป็นติวเตอร์
-                    </button>
+                    <button onclick="openProfileModal()" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition cursor-pointer" data-i18n="btn_edit_profile">⚙️ แก้ไขโปรไฟล์ / รูปภาพ</button>
+                    <button id="myCoursesActionBtn" onclick="handleTutorActionClick()" class="px-4 py-2 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-xs sm:text-sm transition cursor-pointer">สมัครเป็นติวเตอร์</button>
                 </div>
             </div>
 
             <div class="border-b border-slate-200 flex items-center gap-6 overflow-x-auto">
-                <button
-                    id="subTabPurchased"
-                    onclick="switchMyCoursesSubTab('purchased')"
-                    class="whitespace-nowrap pb-3 border-b-2 border-academic-blue text-academic-blue font-bold text-sm sm:text-base transition cursor-pointer"
-                >
-                    📚 คอร์สที่ฉันซื้อแล้ว (0)
-                </button>
-                <button
-                    id="subTabUploaded"
-                    onclick="switchMyCoursesSubTab('uploaded')"
-                    class="whitespace-nowrap pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm sm:text-base transition cursor-pointer"
-                >
-                    📹 คลิปสอนที่ฉันลงขาย (0)
-                </button>
+                <button id="subTabPurchased" onclick="switchMyCoursesSubTab('purchased')" class="whitespace-nowrap pb-3 border-b-2 border-academic-blue text-academic-blue font-bold text-sm sm:text-base transition cursor-pointer">📚 คอร์สที่ฉันซื้อแล้ว (0)</button>
+                <button id="subTabUploaded" onclick="switchMyCoursesSubTab('uploaded')" class="whitespace-nowrap pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm sm:text-base transition cursor-pointer">📹 คลิปสอนที่ฉันลงขาย (0)</button>
             </div>
 
             <div id="purchasedCoursesPanel" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
@@ -529,18 +322,14 @@
         </div>
     </footer>
 
-    <!-- ==========================================================
-         MODAL 1: แก้ไขโปรไฟล์และอัปโหลดรูปภาพโปรไฟล์ (Profile Editor)
-         ========================================================== -->
+    <!-- MODAL 1: Profile -->
     <div id="profileModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200 my-auto">
             <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
                 <h3 class="font-bold text-base" data-i18n="modal_profile_title">แก้ไขโปรไฟล์ของฉัน</h3>
                 <button onclick="closeProfileModal()" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 flex items-center justify-center font-bold cursor-pointer">✕</button>
             </div>
-
             <form onsubmit="handleUpdateProfile(event)" class="p-6 space-y-4 text-sm">
-                <!-- รูปโปรไฟล์ + ปุ่มอัปโหลดรูปใหม่ -->
                 <div class="flex flex-col items-center space-y-2.5">
                     <img id="profilePreviewAvatar" src="" alt="Avatar" class="w-24 h-24 rounded-full object-cover border-4 border-blue-100 shadow-sm">
                     <label class="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs cursor-pointer transition">
@@ -548,17 +337,14 @@
                         <input id="profileAvatarFile" type="file" accept="image/*" onchange="previewProfileAvatar(event)" class="hidden">
                     </label>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อที่ใช้แสดง / ชื่อติวเตอร์ (นามแฝง) *</label>
                     <input id="profileName" type="text" required class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none font-semibold">
                 </div>
-
                 <div id="profileRealNameRow" class="hidden">
                     <label class="block text-xs font-semibold text-slate-500 mb-1">ชื่อ-นามสกุลจริง (ข้อมูลยืนยันตัวตนกับแอดมิน)</label>
                     <input id="profileRealName" type="text" disabled class="w-full px-3.5 py-2 rounded-lg border border-slate-200 bg-slate-100 text-slate-500 text-xs">
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">สาขาวิชาที่เรียน *</label>
                     <select id="profileDepartment" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none bg-white">
@@ -569,12 +355,10 @@
                         <option value="สาขาวิศวกรรมอุตสาหการ">สาขาวิศวกรรมอุตสาหการ</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ</label>
                     <input id="profilePhone" type="text" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none">
                 </div>
-
                 <div class="pt-2 flex gap-3">
                     <button type="button" onclick="closeProfileModal()" class="w-1/3 py-2.5 rounded-lg border border-slate-300 text-slate-600 font-semibold cursor-pointer">ยกเลิก</button>
                     <button type="submit" class="w-2/3 py-2.5 rounded-lg bg-academic-blue hover:bg-academic-blueHover text-white font-semibold cursor-pointer">บันทึกโปรไฟล์</button>
@@ -583,9 +367,7 @@
         </div>
     </div>
 
-    <!-- ==========================================================
-         MODAL 2: สมัครเป็นติวเตอร์ (ใส่ทั้งชื่อ-นามสกุลจริง และชื่อติวเตอร์นามแฝง)
-         ========================================================== -->
+    <!-- MODAL 2: Tutor Application -->
     <div id="tutorApplicationModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 my-auto max-h-[92vh] flex flex-col">
             <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
@@ -595,15 +377,11 @@
                 </div>
                 <button onclick="closeTutorApplicationModal()" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 flex items-center justify-center font-bold cursor-pointer">✕</button>
             </div>
-
             <form onsubmit="handleTutorApplication(event)" class="p-6 overflow-y-auto space-y-4 flex-1 text-sm">
                 <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">
                     <p>กรอกชื่อ-นามสกุลจริงสำหรับให้แอดมินตรวจสอบ และตั้ง <strong>ชื่อติวเตอร์ (นามแฝง)</strong> สำหรับใช้แสดงให้ผู้ซื้อเห็นบนหน้าคอร์สเรียน</p>
-                    <button type="button" onclick="fillSampleTutorVerification()" class="underline font-bold text-academic-blue cursor-pointer">
-                        ⚡ คลิกเพื่อกรอกข้อมูลตัวอย่างอัตโนมัติ
-                    </button>
+                    <button type="button" onclick="fillSampleTutorVerification()" class="underline font-bold text-academic-blue cursor-pointer">⚡ คลิกเพื่อกรอกข้อมูลตัวอย่างอัตโนมัติ</button>
                 </div>
-
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ-นามสกุลจริง (สำหรับแอดมินตรวจสอบ) *</label>
@@ -614,7 +392,6 @@
                         <input id="tutorAliasName" type="text" required placeholder="เช่น เสี่ยไอซ์" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none font-bold text-academic-blue">
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสนักศึกษา *</label>
@@ -635,7 +412,6 @@
                         <input id="tutorGpax" type="number" step="0.01" min="2.00" max="4.00" required placeholder="3.65" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none">
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ *</label>
@@ -646,25 +422,19 @@
                         <input id="tutorTranscriptUrl" type="url" required placeholder="https://drive.google.com/..." class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none">
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">อัปโหลดรูปบัตรนักศึกษา (ไฟล์รูปภาพ)</label>
                     <input id="tutorIdCardFile" type="file" accept="image/*" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-slate-50 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-academic-blue file:text-white file:font-semibold">
                 </div>
-
                 <div class="pt-2 flex gap-3">
                     <button type="button" onclick="closeTutorApplicationModal()" class="w-1/3 py-2.5 rounded-lg border border-slate-300 text-slate-600 font-semibold cursor-pointer">ยกเลิก</button>
-                    <button type="submit" class="w-2/3 py-2.5 rounded-lg bg-academic-blue hover:bg-academic-blueHover text-white font-semibold cursor-pointer">
-                        ✓ ยืนยันตัวตนเป็นติวเตอร์
-                    </button>
+                    <button type="submit" class="w-2/3 py-2.5 rounded-lg bg-academic-blue hover:bg-academic-blueHover text-white font-semibold cursor-pointer">✓ ยืนยันตัวตนเป็นติวเตอร์</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ==========================================================
-         MODAL 3: ลงขายคอร์สเรียน (ใส่แค่รหัสวิชา + ราคาเดียว + ชั่วโมงเป็นตัวเลข + ดึงชื่อผู้สอนอัตโนมัติ)
-         ========================================================== -->
+    <!-- MODAL 3: Create Course -->
     <div id="createCourseModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 my-auto max-h-[92vh] flex flex-col">
             <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
@@ -674,16 +444,12 @@
                 </div>
                 <button onclick="closeCreateCourseModal()" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 flex items-center justify-center font-bold cursor-pointer">✕</button>
             </div>
-
             <form onsubmit="handleCreateCourse(event)" class="p-6 overflow-y-auto space-y-4 flex-1 text-sm">
-                <!-- แจ้งเตือนเรื่องการแก้ไขหลังวางขายต้องผ่านแอดมินเท่านั้น -->
                 <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start justify-between gap-3">
                     <div>
                         <strong>🔒 ข้อกำหนดการลงขาย:</strong> ระบบจะแสดงชื่อผู้สอนเป็น <strong id="createCourseTutorPreview" class="text-academic-blue underline"></strong> โดยอัตโนมัติ และหลังจากกดวางขายแล้ว <strong>ผู้สอนจะไม่สามารถแก้ไขราคาหรือข้อมูลเองได้ (ต้องแจ้งแอดมินเป็นผู้แก้ไขให้เท่านั้น)</strong>
                     </div>
                 </div>
-
-                <!-- รหัสวิชา 6 หลัก (ไม่ต้องเลือกหมวดหมู่ ระบบแยกสาขาให้อัตโนมัติ) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสวิชา 6 หลัก (ระบบจัดหมวดสาขาให้อัตโนมัติ) *</label>
@@ -700,13 +466,10 @@
                         </select>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อวิชาและชื่อคอร์สเรียน *</label>
                     <input id="newCourseName" type="text" required placeholder="เช่น Database Systems (สรุปเข้ม ER Diagram และ SQL)" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none">
                 </div>
-
-                <!-- ราคาขายจริงช่องเดียว + ชั่วโมงคอร์สใส่ตัวเลขเท่านั้น + อายุคอร์ส -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">ราคาที่ต้องการขาย (บาท) *</label>
@@ -728,23 +491,18 @@
                         </select>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">เหมาะสำหรับ *</label>
                     <input id="newCourseTarget" type="text" required placeholder="เช่น นักศึกษาชั้นปีที่ 2-3 ที่เรียนวิชานี้และต้องการปูพื้นฐานเพื่อทำข้อสอบ" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none">
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">รายละเอียดคอร์สเรียน *</label>
                     <textarea id="newCourseDesc" rows="2" required placeholder="อธิบายเนื้อหาที่จะสอนในคอร์สนี้..." class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none"></textarea>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">หัวข้อบทเรียน (ขึ้นบรรทัดใหม่ในแต่ละบท) *</label>
                     <textarea id="newCourseSyllabus" rows="3" required placeholder="บทที่ 1: ปูพื้นฐานสำคัญ&#10;บทที่ 2: ตะลุยโจทย์ข้อสอบเก่า" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none"></textarea>
                 </div>
-
-                <!-- อัปโหลดรูปปก + ลิงก์ PDF -->
                 <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-200 space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
                         <div class="sm:col-span-8">
@@ -758,26 +516,20 @@
                             </div>
                         </div>
                     </div>
-
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">ลิงก์ดาวน์โหลดเอกสารการเรียน (ไฟล์ PDF) *</label>
                         <input id="newCoursePdfUrl" type="url" required placeholder="https://drive.google.com/..." class="w-full px-3.5 py-2 rounded-lg border border-slate-300 bg-white focus:border-academic-blue focus:outline-none">
                     </div>
                 </div>
-
                 <div class="pt-2 flex gap-3">
                     <button type="button" onclick="closeCreateCourseModal()" class="w-1/3 py-2.5 rounded-xl border border-slate-300 text-slate-600 font-semibold cursor-pointer">ยกเลิก</button>
-                    <button type="submit" class="w-2/3 py-2.5 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold cursor-pointer">
-                        ยืนยันและวางขายคอร์สเรียน
-                    </button>
+                    <button type="submit" class="w-2/3 py-2.5 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold cursor-pointer">ยืนยันและวางขายคอร์สเรียน</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ==========================================================
-         MODAL 4: ติดต่อผู้สอน (Contact Tutor Modal)
-         ========================================================== -->
+    <!-- MODAL 4: Contact Tutor -->
     <div id="contactTutorModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200">
             <div class="px-6 py-4 bg-academic-blue text-white flex items-center justify-between">
@@ -802,9 +554,7 @@
         </div>
     </div>
 
-    <!-- ==========================================================
-         MODAL 5: ติดต่อแอดมิน (Contact Admin Modal - สำหรับแจ้งแก้ไขคอร์ส / ตั้งโปรโมชัน / ปัญหาทั่วไป)
-         ========================================================== -->
+    <!-- MODAL 5: Contact Admin -->
     <div id="contactAdminModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200">
             <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
@@ -831,9 +581,7 @@
         </div>
     </div>
 
-    <!-- ==========================================================
-         MODAL 6: ห้องเรียนวิดีโอ + ลิงก์ดาวน์โหลด PDF
-         ========================================================== -->
+    <!-- MODAL 6: Video Player -->
     <div id="videoPlayerModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200">
             <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
@@ -849,7 +597,6 @@
                     <p class="font-bold text-base sm:text-lg">วิดีโอคอร์สเรียน (Full HD 1080p)</p>
                     <p id="playerTutorName" class="text-xs text-slate-400 mt-1"></p>
                 </div>
-
                 <div class="flex flex-wrap items-center justify-between gap-4 bg-blue-50/70 p-4 rounded-xl border border-blue-200">
                     <div class="text-xs sm:text-sm">
                         <p class="font-bold text-slate-900">📄 เอกสารประกอบการเรียน (PDF)</p>
@@ -863,12 +610,7 @@
         </div>
     </div>
 
-    <!-- ==========================================================
-         DRAWER: ตะกร้าคอร์สเรียน
-         ========================================================== -->
-    <!-- ==========================================================
-         DRAWER: ตะกร้าคอร์สเรียน (มีรูปคอร์ส + ชื่อติวเตอร์ + ปุ่มลบ + ใช้หลายโค้ดต่อกันได้)
-         ========================================================== -->
+    <!-- DRAWER: Cart -->
     <div id="cartDrawer" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs justify-end">
         <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between">
             <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
@@ -878,20 +620,13 @@
                 </div>
                 <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 flex items-center justify-center font-bold cursor-pointer">✕</button>
             </div>
-
             <div id="cartItemsContainer" class="flex-1 p-5 overflow-y-auto space-y-3"></div>
-
             <div class="p-5 bg-slate-50 border-t border-slate-200 space-y-4">
-                <!-- แสดงป้ายโค้ดส่วนลดที่ใช้ไปแล้ว -->
                 <div id="appliedCouponsBadges" class="hidden flex-wrap items-center gap-1.5"></div>
-
                 <form onsubmit="handleApplyCoupon(event)" class="flex gap-2">
                     <input id="couponInput" type="text" placeholder="กรอกโค้ดส่วนลด เช่น ENGMID20 หรือ PASSA100" class="flex-1 px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm font-semibold uppercase focus:outline-none focus:border-academic-blue">
-                    <button id="couponSubmitBtn" type="submit" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs sm:text-sm transition cursor-pointer shrink-0">
-                        ใช้โค้ด
-                    </button>
+                    <button id="couponSubmitBtn" type="submit" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs sm:text-sm transition cursor-pointer shrink-0">ใช้โค้ด</button>
                 </form>
-
                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5">
                     <div id="originalTotalRow" class="hidden justify-between text-xs text-slate-500">
                         <span>ราคารวมปกติ</span>
@@ -906,24 +641,18 @@
                         <span id="cartTotalAmount" class="text-xl font-bold text-academic-blue">0 บาท</span>
                     </div>
                 </div>
-
-                <button onclick="handleCheckout()" class="w-full py-3 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-sm sm:text-base shadow-sm transition cursor-pointer">
-                    ยืนยันการชำระเงิน
-                </button>
+                <button onclick="handleCheckout()" class="w-full py-3 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-sm sm:text-base shadow-sm transition cursor-pointer">ยืนยันการชำระเงิน</button>
             </div>
         </div>
     </div>
 
-    <!-- ==========================================================
-         MODAL: เข้าสู่ระบบ / สมัครสมาชิก
-         ========================================================== -->
+    <!-- MODAL: Auth (Login/Register) -->
     <div id="authModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200">
             <div class="grid grid-cols-2 bg-slate-100 p-1 m-4 rounded-xl">
                 <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="py-2 rounded-lg font-semibold text-sm transition cursor-pointer bg-white text-academic-blue shadow-xs">เข้าสู่ระบบ</button>
                 <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="py-2 rounded-lg font-semibold text-sm transition cursor-pointer text-slate-600">สมัครสมาชิก</button>
             </div>
-
             <div class="px-6 pb-6 pt-1 text-sm">
                 <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
                     <div>
@@ -981,12 +710,10 @@
         </div>
     </div>
 
-    <!-- กล่องแจ้งเตือน Toast -->
+    <!-- Toast Notification -->
     <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden max-w-sm px-5 py-3 rounded-xl shadow-lg text-white font-medium text-sm transition-all"></div>
 
-    <!-- ==========================================================
-         JAVASCRIPT ควบคุมระบบทั้งหมด + ระบบแปลภาษา TH/EN
-         ========================================================== -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         let allCourses = [];
         let allCategories = [];
@@ -995,13 +722,12 @@
         let activeCategory = 'ALL';
         let searchQuery = '';
         let currentDetailCourse = null;
-        let authToken = localStorage.getItem('auth_token') || null;
-        let currentUser = null;
+        
+        let currentUser = null; 
         let currentLang = localStorage.getItem('app_lang') || 'th';
 
-        // พจนานุกรมภาษาไทย / อังกฤษ (TH / EN)
         const i18nDict = {
-            th: {
+            th: { 
                 nav_search_courses: 'ค้นหาคอร์สเรียน',
                 nav_my_courses: 'คอร์สของฉัน',
                 nav_apply_tutor: 'สมัครเป็นติวเตอร์',
@@ -1035,7 +761,7 @@
                 btn_purchased_watch: '✓ ซื้อแล้ว (เข้าเรียน)',
                 all_depts: 'ทุกสาขาวิชา'
             },
-            en: {
+            en: { 
                 nav_search_courses: 'Browse Courses',
                 nav_my_courses: 'My Courses',
                 nav_apply_tutor: 'Become a Tutor',
@@ -1096,14 +822,16 @@
             renderCategoryButtons();
             renderCourses();
             if (currentDetailCourse) openCourseDetailPage(currentDetailCourse.id, false);
-            if (authToken) renderMyCoursesPanels();
+            if (currentUser) renderMyCoursesPanels();
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
             applyLanguageUI();
             await fetchCourses();
-            if (authToken) {
-                await fetchMemberProfile();
+            
+            await fetchMemberProfile();
+            
+            if (currentUser) {
                 await fetchMyCoursesData();
                 await fetchCart();
             }
@@ -1130,7 +858,6 @@
             return purchasedCourseIds.has(Number(courseId));
         }
 
-        // สลับหน้าหลัก
         function switchMainView(viewName) {
             const vCatalog = document.getElementById('viewCatalog');
             const vDetail = document.getElementById('viewCourseDetail');
@@ -1156,7 +883,7 @@
                 vDetail.classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (viewName === 'my-courses') {
-                if (!authToken) {
+                if (!currentUser) {
                     showToast('กรุณาเข้าสู่ระบบเพื่อดูคอร์สเรียนของคุณ', true);
                     openAuthModal('login');
                     vCatalog.classList.remove('hidden');
@@ -1169,7 +896,6 @@
             }
         }
 
-        // แยกข้อมูล Metadata ของคอร์สเรียน (ชั่วโมงคอร์สเป็นตัวเลข + สาขาวิชาผู้สอน)
         function parseCourseMeta(course) {
             const v = (course.variants && course.variants.length > 0) ? course.variants[0] : null;
             let tutorName = 'เสี่ยไอซ์';
@@ -1205,7 +931,6 @@
                 } catch (e) {}
             }
 
-            // ถ้าเป็นคอร์สของผู้ใช้ปัจจุบันที่ล็อกอินอยู่ ให้แสดงชื่อนามแฝงและสาขาล่าสุดจากโปรไฟล์
             if (currentUser && ownerEmail === currentUser.email) {
                 tutorName = (currentUser.meta && currentUser.meta.tutor_alias) ? currentUser.meta.tutor_alias : currentUser.name;
                 tutorDepartment = (currentUser.meta && currentUser.meta.department) ? currentUser.meta.department : (currentUser.address || tutorDepartment);
@@ -1221,7 +946,6 @@
             return match ? match[1] : '';
         }
 
-        // แสดงชื่อสาขาอัตโนมัติเวลาติวเตอร์พิมพ์รหัสวิชา 6 หลักในหน้าลงคอร์ส
         function updateAutoCategoryBadge(skuVal) {
             const prefix = skuVal.trim().substring(0, 3);
             const labelEl = document.getElementById('autoDetectedCategoryText');
@@ -1238,15 +962,18 @@
                 labelEl.textContent = `✓ จัดเข้าหมวดหมู่: ${map[prefix]} อัตโนมัติ`;
                 labelEl.className = 'text-[11px] text-emerald-700 font-semibold block mt-1';
             } else {
-                labelEl.textContent = 'ระบบจะจัดเข้าหมวดวิชาแกนวิศวกรรมพื้นฐานให้อัตโนมัติ';
-                labelEl.className = 'text-[11px] text-slate-500 block mt-1';
+                // แจ้งว่ารหัสวิชานี้จะถูกจัดเข้าหมวดหมู่อื่นๆ
+                labelEl.textContent = 'ระบบจะจัดเข้า "หมวดหมู่อื่นๆ" อัตโนมัติ';
+                labelEl.className = 'text-[11px] text-amber-600 font-semibold block mt-1';
             }
         }
 
-        // 1. ดึงข้อมูลคอร์สทั้งหมด
         async function fetchCourses() {
             try {
-                const res = await fetch('/api/products', { headers: { 'Accept': 'application/json' } });
+                const res = await fetch('/api/products', { 
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
+                });
                 const json = await res.json();
                 allCourses = json.data || [];
                 allCategories = json.categories || [];
@@ -1311,7 +1038,6 @@
             handleSearchInput(code);
         }
 
-        // วาดการ์ดคอร์สเรียน (คลีน ไม่รก แสดงราคาเดียว + ชื่อผู้สอนและสาขา)
         function renderCourses() {
             const grid = document.getElementById('coursesGrid');
             if (!grid) return;
@@ -1424,7 +1150,6 @@
             }).join('');
         }
 
-        // เปิดหน้ารายละเอียดคอร์สเรียน
         function openCourseDetailPage(courseId, switchView = true) {
             const course = allCourses.find(c => c.id === courseId);
             if (!course) return;
@@ -1454,7 +1179,6 @@
             document.getElementById('detailSuitableFor').textContent = ' ' + meta.suitableFor;
             document.getElementById('detailDescription').textContent = ' ' + (course.description || '');
 
-            // แสดงชื่อนามแฝงผู้สอน คู่กับ สาขาที่เรียนของผู้สอน
             document.getElementById('detailBottomTutor').textContent = meta.tutorName;
             document.getElementById('detailBottomTutorDept').textContent = meta.tutorDepartment;
 
@@ -1502,17 +1226,12 @@
             `).join('');
         }
 
-        // ==========================================================
-        // 2. หน้า "คอร์สของฉัน" (แก้บั๊กเลข 1 หลังคลิปที่ลงขายสำหรับคนที่ยังไม่ได้เป็นติวเตอร์)
-        // ==========================================================
         async function fetchMyCoursesData() {
-            if (!authToken) return;
+            if (!currentUser) return;
             try {
                 const res = await fetch('/api/my-courses', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -1527,7 +1246,6 @@
             }
         }
 
-        // คืนค่าคอร์สที่ลงขายเฉพาะเมื่อผู้ใช้มี role === 'tutor' เท่านั้น (ถ้าเป็น customer จะได้ 0 เสมอ)
         function getMyUploadedCourses() {
             if (!currentUser || currentUser.role !== 'tutor') return [];
             return allCourses.filter(c => {
@@ -1622,7 +1340,6 @@
                 }).join('');
             }
 
-            // แท็บคลิปที่ฉันลงขาย (ล็อกไม่ให้แก้ไขเอง ต้องแจ้งแอดมินเท่านั้น)
             if (!currentUser || currentUser.role !== 'tutor') {
                 panelUploaded.innerHTML = `
                     <div class="col-span-full bg-amber-50/70 rounded-2xl p-10 text-center border border-amber-200 space-y-3">
@@ -1697,9 +1414,6 @@
             document.getElementById('videoPlayerModal').classList.add('hidden');
         }
 
-        // ==========================================================
-        // 3. ระบบแก้ไขโปรไฟล์ + ติดต่อผู้สอน + ติดต่อแอดมิน
-        // ==========================================================
         function openProfileModal() {
             if (!currentUser) return;
             const meta = currentUser.meta || {};
@@ -1747,11 +1461,9 @@
             try {
                 const res = await fetch('/api/profile/update', {
                     method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
+                    headers: { 'Accept': 'application/json' },
+                    body: formData,
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -1805,11 +1517,8 @@
             showToast('🛠️ ส่งเรื่องถึงแอดมินเรียบร้อยแล้ว แอดมินจะดำเนินการตรวจสอบและแก้ไขให้โดยเร็วที่สุด');
         }
 
-        // ==========================================================
-        // 4. ระบบสมัครเป็นติวเตอร์ & ลงขายคอร์สเรียน
-        // ==========================================================
         function handleTutorActionClick(prefillSku = '') {
-            if (!authToken) {
+            if (!currentUser) {
                 showToast('กรุณาเข้าสู่ระบบก่อนดำเนินการ', true);
                 openAuthModal('login');
                 return;
@@ -1822,7 +1531,7 @@
         }
 
         function openTutorApplicationModal() {
-            if (!authToken) {
+            if (!currentUser) {
                 showToast('กรุณาเข้าสู่ระบบก่อนสมัครเป็นติวเตอร์', true);
                 openAuthModal('login');
                 return;
@@ -1867,11 +1576,9 @@
             try {
                 const res = await fetch('/api/apply-tutor', {
                     method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
+                    headers: { 'Accept': 'application/json' },
+                    body: formData,
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -1889,7 +1596,7 @@
         }
 
         function openCreateCourseModal(prefillSku = '') {
-            if (!authToken) {
+            if (!currentUser) {
                 showToast('กรุณาเข้าสู่ระบบก่อนลงขายคอร์สเรียน', true);
                 openAuthModal('login');
                 return;
@@ -1948,11 +1655,9 @@
             try {
                 const res = await fetch('/api/products', {
                     method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
+                    headers: { 'Accept': 'application/json' },
+                    body: formData,
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -1969,9 +1674,6 @@
             }
         }
 
-        // ==========================================================
-        // 5. ระบบสมาชิกและอัปเดต UI โปรไฟล์
-        // ==========================================================
         function openAuthModal(tab = 'login') {
             switchAuthTab(tab);
             document.getElementById('authModal').classList.remove('hidden');
@@ -2012,22 +1714,26 @@
                 const res = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ email, password }),
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
                     showToast(data.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', true);
                     return;
                 }
-                authToken = data.token;
+                
                 currentUser = data.user;
-                localStorage.setItem('auth_token', authToken);
                 updateAuthUI();
                 closeAuthModal();
+                showToast(`เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ ${currentUser.name}`);
+
                 await fetchMyCoursesData();
                 await fetchCart();
-                showToast(`เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ ${currentUser.name}`);
+                renderCourses();
+
             } catch (err) {
+                console.error(err);
                 showToast('เกิดข้อผิดพลาดในการเข้าสู่ระบบ', true);
             }
         }
@@ -2046,7 +1752,8 @@
                 const res = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload),
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -2061,14 +1768,13 @@
 
         async function fetchMemberProfile() {
             try {
-                const res = await fetch('/api/member-info', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    }
+                const res = await fetch('/api/profile', {
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 if (!res.ok) {
-                    logout(false);
+                    currentUser = null;
+                    updateAuthUI();
                     return;
                 }
                 const data = await res.json();
@@ -2090,13 +1796,16 @@
             const myCoursesRoleBadge = document.getElementById('myCoursesRoleBadge');
             const mobileBtnTutor = document.getElementById('mobileBtnTutorAction');
 
-            if (authToken && currentUser) {
+            if (currentUser) {
                 const meta = currentUser.meta || {};
                 const avatarUrl = meta.avatar_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(currentUser.name) + '&background=0066FF&color=fff';
                 const displayName = meta.tutor_alias || currentUser.name;
                 const dept = meta.department || currentUser.address || 'สาขาวิศวกรรมคอมพิวเตอร์';
 
+                // แก้ไขจุดที่มีปัญหาคลาส flex ตีกัน
+                guestDiv.classList.remove('flex');
                 guestDiv.classList.add('hidden');
+                
                 userDiv.classList.remove('hidden');
                 userDiv.classList.add('flex');
 
@@ -2129,32 +1838,44 @@
                     if (mobileBtnTutor) mobileBtnTutor.textContent = 'สมัครเป็นติวเตอร์';
                 }
             } else {
+                // คืนค่าคลาสเริ่มต้นเมื่อยังไม่ได้ล็อกอิน
                 guestDiv.classList.remove('hidden');
-                userDiv.classList.add('hidden');
+                guestDiv.classList.add('flex');
+                
                 userDiv.classList.remove('flex');
+                userDiv.classList.add('hidden');
+                
                 btnApplyTutor.classList.remove('hidden');
                 btnCreateCourse.classList.add('hidden');
             }
         }
 
-        function logout(notify = true) {
-            authToken = null;
+        async function logout(notify = true) {
+            try {
+                await fetch('/api/logout', { 
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include' 
+                });
+            } catch (err) {}
+
             currentUser = null;
             purchasedCourses = [];
             purchasedCourseIds.clear();
-            localStorage.removeItem('auth_token');
+            
+            // สั่งล้าง localStorage ทิ้งทั้งหมด
+            localStorage.clear();
+            
             updateAuthUI();
-            document.getElementById('cartBadge').textContent = '0';
-            document.getElementById('myCoursesCountBadge').textContent = '0';
-            switchMainView('catalog');
             if (notify) showToast('ออกจากระบบเรียบร้อยแล้ว');
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
         }
 
-        // ==========================================================
-        // 6. ระบบตะกร้าคอร์สเรียน
-        // ==========================================================
         async function addToCart(productId) {
-            if (!authToken) {
+            if (!currentUser) {
                 showToast('กรุณาเข้าสู่ระบบก่อนสั่งซื้อคอร์สเรียน', true);
                 openAuthModal('login');
                 return;
@@ -2169,12 +1890,9 @@
             try {
                 const res = await fetch('/api/cart', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ product_id: productId, quantity: 1 })
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ product_id: productId, quantity: 1 }),
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -2190,13 +1908,11 @@
         }
 
         async function fetchCart() {
-            if (!authToken) return;
+            if (!currentUser) return;
             try {
                 const res = await fetch('/api/cart', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 renderCart(data);
@@ -2205,16 +1921,13 @@
             }
         }
 
-        // ลบคอร์สเรียนออกจากตะกร้า (DELETE /api/cart/{itemId})
         async function removeFromCart(itemId) {
-            if (!authToken) return;
+            if (!currentUser) return;
             try {
                 const res = await fetch(`/api/cart/${itemId}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -2228,7 +1941,6 @@
             }
         }
 
-        // แสดงรายการในตะกร้า พร้อมรูปปกคอร์ส ชื่อติวเตอร์ ปุ่มลบ และรองรับการกรอกคูปองหลายโค้ดต่อกัน
         function renderCart(data) {
             const cart = data ? data.cart : null;
             const container = document.getElementById('cartItemsContainer');
@@ -2243,7 +1955,6 @@
             const couponInput = document.getElementById('couponInput');
             const couponBtn = document.getElementById('couponSubmitBtn');
 
-            // ปลดล็อกช่องกรอกคูปองเสมอเพื่อให้พิมพ์โค้ดที่ 2 ต่อได้ทันที
             if (couponInput) couponInput.disabled = false;
             if (couponBtn) {
                 couponBtn.disabled = false;
@@ -2304,26 +2015,18 @@
                 }
             }
 
-            // วาดการ์ดคอร์สในตะกร้า: มีรูปปกคอร์ส + รหัสวิชา + ชื่อคอร์ส + ชื่อติวเตอร์ + ปุ่มลบออก
             container.innerHTML = cart.items.map(item => {
                 const product = item.product || {};
                 const courseName = product.name || `คอร์สเรียน #${item.product_id}`;
                 const sku = product.sku ? `[${product.sku}] ` : '';
-
-                // ดึงรูปปกคอร์ส
                 const imgUrl = (product.images && product.images.length > 0)
                     ? product.images[0].image_url
                     : 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80';
-
-                // ดึงชื่อติวเตอร์ผู้สอน
                 const meta = parseCourseMeta(product);
 
                 return `
                     <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3.5 hover:border-slate-300 transition">
-                        <!-- รูปปกคอร์สเรียน -->
                         <img src="${imgUrl}" alt="${courseName}" class="w-20 h-20 rounded-xl object-cover shrink-0 border border-slate-200 bg-slate-900">
-
-                        <!-- ข้อมูลคอร์สและชื่อติวเตอร์ -->
                         <div class="flex-1 min-w-0 space-y-1">
                             <h4 class="font-bold text-xs sm:text-sm text-slate-900 line-clamp-2 leading-snug">${sku}${courseName}</h4>
                             <p class="text-xs text-academic-blue font-semibold truncate">👨‍🏫 ผู้สอน: ${meta.tutorName}</p>
@@ -2331,7 +2034,6 @@
                                 <span class="font-bold text-academic-blue text-sm">
                                     ${Number(item.price).toLocaleString()} บาท
                                 </span>
-                                <!-- ปุ่มลบคอร์สออกจากตะกร้า -->
                                 <button
                                     onclick="removeFromCart(${item.id})"
                                     class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold text-xs transition cursor-pointer"
@@ -2346,38 +2048,8 @@
             }).join('');
         }
 
-        async function handleApplyCoupon(e) {
-            e.preventDefault();
-            const couponInput = document.getElementById('couponInput');
-            const code = couponInput.value.trim();
-            if (!code) return;
-
-            try {
-                const res = await fetch('/api/apply-coupon', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ code })
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    showToast(data.message || 'ไม่สามารถใช้โค้ดส่วนลดได้', true);
-                    return;
-                }
-                // ล้างช่องกรอกเพื่อให้พิมพ์โค้ดตัวที่สองต่อได้ทันที
-                couponInput.value = '';
-                showToast(data.message || 'ใช้โค้ดส่วนลดสำเร็จ');
-                await fetchCart();
-            } catch (err) {
-                showToast('ไม่สามารถใช้คูปองได้', true);
-            }
-        }
-
         function openCartDrawer() {
-            if (!authToken) {
+            if (!currentUser) {
                 showToast('กรุณาเข้าสู่ระบบเพื่อดูตะกร้าคอร์สเรียน', true);
                 openAuthModal('login');
                 return;
@@ -2404,18 +2076,16 @@
             try {
                 const res = await fetch('/api/apply-coupon', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ code })
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ code }),
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
                     showToast(data.message || 'ไม่สามารถใช้โค้ดส่วนลดได้', true);
                     return;
                 }
+                couponInput.value = '';
                 showToast(data.message || 'ใช้โค้ดส่วนลดสำเร็จ');
                 await fetchCart();
             } catch (err) {
@@ -2427,10 +2097,8 @@
             try {
                 const res = await fetch('/api/checkout', {
                     method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -2450,7 +2118,7 @@
 
         async function submitReview(e) {
             e.preventDefault();
-            if (!authToken) {
+            if (!currentUser) {
                 showToast('กรุณาเข้าสู่ระบบก่อนรีวิวคอร์สเรียน', true);
                 openAuthModal('login');
                 return;
@@ -2463,16 +2131,13 @@
             try {
                 const res = await fetch('/api/reviews', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({
                         product_id: currentDetailCourse.id,
                         rating,
                         comment
-                    })
+                    }),
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {

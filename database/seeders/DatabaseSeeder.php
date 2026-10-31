@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
         Cache::flush();
 
+        $this->call(CategorySeeder::class);
+
         // 1. บัญชีนักศึกษาทั่วไป (ยังไม่เป็นติวเตอร์)
         $user1 = User::create([
             'name' => 'ธนกร',

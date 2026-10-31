@@ -40,7 +40,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // 2. เข้าสู่ระบบ
+    // 2. เข้าสู่ระบบ (อัปเดตเพื่อใช้ HttpOnly Cookie)
     public function login(Request $request)
     {
         $request->validate([
@@ -58,11 +58,15 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        // สร้าง HttpOnly Cookie (อายุ 1 วัน = 1440 นาที)
+        // พารามิเตอร์: ชื่อ, ค่า, เวลา(นาที), path, domain, secure(HTTPS เท่านั้น), httpOnly
+        $cookie = cookie('auth_token', $token, 1440, '/', null, env('APP_ENV') === 'production', true);
+
         return response()->json([
             'message' => 'เข้าสู่ระบบสำเร็จ!',
-            'user' => $user,
-            'token' => $token
-        ]);
+            'user' => $user
+            // ไม่ส่ง 'token' กลับไปเป็น Text ใน JSON อีกต่อไป เพื่อความปลอดภัย
+        ])->withCookie($cookie);
     }
 
     // 3. ดึงข้อมูลโปรไฟล์ปัจจุบัน
@@ -74,7 +78,7 @@ class AuthController extends Controller
         ]);
     }
 
-    // 4. แก้ไขโปรไฟล์และอัปโหลดรูปภาพโปรไฟล์ (บันทึกลงตาราง users ถาวร)
+    // 4. แก้ไขโปรไฟล์และอัปโหลดรูปภาพโปรไฟล์
     public function updateProfile(Request $request)
     {
         $user = $request->user();
@@ -87,14 +91,8 @@ class AuthController extends Controller
         ]);
 
         if ($request->hasFile('avatar_image')) {
-            $file = $request->file('avatar_image');
-            $filename = 'avatar_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $uploadPath = public_path('uploads/avatars');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0775, true);
-            }
-            $file->move($uploadPath, $filename);
-            $user->avatar_url = '/uploads/avatars/' . $filename;
+            $path = $request->file('avatar_image')->store('avatars', 'public');
+            $user->avatar_url = '/storage/' . $path;
         }
 
         $user->name = $request->name;
@@ -120,7 +118,7 @@ class AuthController extends Controller
         ]);
     }
 
-    // 5. ยืนยันตัวตนเพื่อเป็นติวเตอร์ (บันทึกลงตาราง users ถาวร)
+    // 5. ยืนยันตัวตนเพื่อเป็นติวเตอร์
     public function applyTutor(Request $request)
     {
         $request->validate([
@@ -137,14 +135,8 @@ class AuthController extends Controller
         $user = $request->user();
 
         if ($request->hasFile('id_card_image')) {
-            $file = $request->file('id_card_image');
-            $filename = 'tutor_id_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $uploadPath = public_path('uploads/tutors');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0775, true);
-            }
-            $file->move($uploadPath, $filename);
-            $user->id_card_url = '/uploads/tutors/' . $filename;
+            $path = $request->file('id_card_image')->store('tutors', 'public');
+            $user->id_card_url = '/storage/' . $path;
         }
 
         $user->real_name = $request->real_name;
@@ -163,5 +155,19 @@ class AuthController extends Controller
             'message' => 'ยืนยันตัวตนสำเร็จ! คุณได้รับสิทธิ์เป็นติวเตอร์ในชื่อ "' . $user->tutor_alias . '" เรียบร้อยแล้ว',
             'user' => $user->fresh()
         ]);
+    }
+
+    // 6. ออกจากระบบ (Logout) และล้าง Cookie
+    public function logout(Request $request)
+    {
+        // 1. ทำลาย Token ปัจจุบันในฐานข้อมูล เพื่อไม่ให้เอาไปใช้ซ้ำได้อีก
+        $request->user()->currentAccessToken()->delete();
+
+        // 2. สร้าง Cookie เปล่าๆ เพื่อไปลบทับ Cookie เดิมในเบราว์เซอร์
+        $cookie = cookie()->forget('auth_token');
+
+        return response()->json([
+            'message' => 'ออกจากระบบสำเร็จ'
+        ])->withCookie($cookie);
     }
 }

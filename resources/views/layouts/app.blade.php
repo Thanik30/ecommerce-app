@@ -144,7 +144,7 @@
             </div>
             <div class="flex items-center gap-4">
                 <button onclick="openContactAdminModal('ติดต่อแอดมิน')" class="text-academic-blue hover:underline font-medium cursor-pointer" data-i18n="nav_contact_admin">ติดต่อแอดมิน</button>
-                <span>Ubuntu + DBeaver Ready</span>
+                <span>Thank you for using</span>
             </div>
         </div>
     </footer>
@@ -295,7 +295,7 @@
          GLOBAL JAVASCRIPT (ใช้ร่วมกันทุกหน้า + แปลภาษา TH/EN + จำค่าโปรไฟล์)
          ========================================================== -->
     <script>
-        let authToken = localStorage.getItem('auth_token') || null;
+        // 1. ไม่มี authToken แล้ว
         let currentUser = JSON.parse(localStorage.getItem('cached_user') || 'null');
         let currentLang = localStorage.getItem('app_lang') || 'th';
         let purchasedCourseIds = new Set();
@@ -444,7 +444,6 @@
             showToast(`คัดลอกโค้ดส่วนลด ${code} เรียบร้อยแล้ว`);
         }
 
-        // แยกข้อมูลคอร์สเรียนจากคอลัมน์ในตาราง products (และ fallback ไปที่ variants)
         function parseCourseMeta(course) {
             const v = (course.variants && course.variants.length > 0) ? course.variants[0] : null;
             let parsedVariant = {};
@@ -478,7 +477,6 @@
             };
         }
 
-        // อัปเดตแถบเมนูด้านบนให้แสดงรูปโปรไฟล์ที่จำค่าไว้ทันที
         function updateAuthUI() {
             const guestDiv = document.getElementById('guestActions');
             const userDiv = document.getElementById('userActions');
@@ -488,11 +486,13 @@
             const mobileCreateCourse = document.getElementById('mobileBtnCreateCourse');
             const navTutorBadge = document.getElementById('navTutorBadge');
 
-            if (authToken && currentUser) {
+            if (currentUser) {
                 const displayName = currentUser.tutor_alias || currentUser.name || 'นักศึกษา';
                 const avatarUrl = currentUser.avatar_url || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=0066FF&color=fff&bold=true');
 
+                guestDiv.classList.remove('flex');
                 guestDiv.classList.add('hidden');
+                
                 userDiv.classList.remove('hidden');
                 userDiv.classList.add('flex');
 
@@ -514,25 +514,30 @@
                 }
             } else {
                 guestDiv.classList.remove('hidden');
+                guestDiv.classList.add('flex');
+                
                 userDiv.classList.add('hidden');
                 userDiv.classList.remove('flex');
+                
                 if (btnApplyTutor) btnApplyTutor.classList.remove('hidden');
                 if (btnCreateCourse) btnCreateCourse.classList.add('hidden');
             }
         }
 
         async function fetchMemberProfile() {
-            if (!authToken) return null;
             try {
                 const res = await fetch('/api/member-info', {
-                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 if (!res.ok) {
-                    logout(false);
+                    currentUser = null;
+                    localStorage.removeItem('cached_user');
+                    updateAuthUI();
                     return null;
                 }
                 const data = await res.json();
-                currentUser = data.user;
+                currentUser = data.user || data;
                 localStorage.setItem('cached_user', JSON.stringify(currentUser));
                 updateAuthUI();
                 return currentUser;
@@ -542,10 +547,11 @@
         }
 
         async function fetchPurchasedIds() {
-            if (!authToken) return;
+            if (!currentUser) return;
             try {
                 const res = await fetch('/api/my-courses', {
-                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -590,24 +596,31 @@
                 const res = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ email, password }),
+                    credentials: 'include' // <--- จุดสำคัญ: รับ-ส่ง Cookie อัตโนมัติ
                 });
                 const data = await res.json();
                 if (!res.ok) {
                     showToast(data.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', true);
                     return;
                 }
-                authToken = data.token;
+                
+                // ไม่มีการเก็บ auth_token ลง LocalStorage แล้ว!
                 currentUser = data.user;
-                localStorage.setItem('auth_token', authToken);
                 localStorage.setItem('cached_user', JSON.stringify(currentUser));
+                
                 updateAuthUI();
                 closeAuthModal();
+                showToast(`เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ ${currentUser.tutor_alias || currentUser.name}`);
+
                 await fetchPurchasedIds();
                 await fetchCart();
-                showToast(`เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ ${currentUser.tutor_alias || currentUser.name}`);
-                if (typeof window.onAuthChanged === 'function') window.onAuthChanged();
+                
+                if (typeof window.onAuthChanged === 'function') {
+                    window.onAuthChanged();
+                }
             } catch (err) {
+                console.error(err);
                 showToast('เกิดข้อผิดพลาดในการเข้าสู่ระบบ', true);
             }
         }
@@ -625,7 +638,8 @@
                 const res = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload),
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -638,21 +652,27 @@
             }
         }
 
-        function logout(notify = true) {
-            authToken = null;
+        async function logout(notify = true) {
+            try {
+                await fetch('/api/logout', { 
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include' 
+                });
+            } catch (err) {}
+
             currentUser = null;
             purchasedCourseIds.clear();
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('cached_user');
+            localStorage.clear();
             updateAuthUI();
             document.getElementById('cartBadge').textContent = '0';
             if (notify) showToast('ออกจากระบบเรียบร้อยแล้ว');
-            window.location.href = '/';
+            setTimeout(() => { window.location.reload(); }, 800);
         }
 
-        // ระบบตะกร้าคอร์สเรียน
+        // ระบบตะกร้าคอร์สเรียน (เอาคำว่า Authorization: Bearer ${authToken} ออกทั้งหมด)
         async function addToCart(productId) {
-            if (!authToken) {
+            if (!currentUser) {
                 showToast('กรุณาเข้าสู่ระบบก่อนสั่งซื้อคอร์สเรียน', true);
                 openAuthModal('login');
                 return;
@@ -665,8 +685,9 @@
             try {
                 const res = await fetch('/api/cart', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` },
-                    body: JSON.stringify({ product_id: productId, quantity: 1 })
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ product_id: productId, quantity: 1 }),
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -682,11 +703,12 @@
         }
 
         async function removeFromCart(itemId) {
-            if (!authToken) return;
+            if (!currentUser) return;
             try {
                 const res = await fetch(`/api/cart/${itemId}`, {
                     method: 'DELETE',
-                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 if (res.ok) {
                     showToast('🗑️ ลบคอร์สเรียนออกจากตะกร้าเรียบร้อยแล้ว');
@@ -696,10 +718,11 @@
         }
 
         async function fetchCart() {
-            if (!authToken) return;
+            if (!currentUser) return;
             try {
                 const res = await fetch('/api/cart', {
-                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 renderCart(data);
@@ -776,7 +799,8 @@
         }
 
         function openCartDrawer() {
-            if (!authToken) {
+            if (!currentUser) {
+                showToast('กรุณาเข้าสู่ระบบเพื่อดูตะกร้าคอร์สเรียน', true);
                 openAuthModal('login');
                 return;
             }
@@ -799,8 +823,9 @@
             try {
                 const res = await fetch('/api/apply-coupon', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` },
-                    body: JSON.stringify({ code })
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ code }),
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -817,7 +842,8 @@
             try {
                 const res = await fetch('/api/checkout', {
                     method: 'POST',
-                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -847,7 +873,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             applyLanguageUI();
             updateAuthUI();
-            if (authToken) {
+            if (currentUser) {
                 await fetchMemberProfile();
                 await fetchPurchasedIds();
                 await fetchCart();

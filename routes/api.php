@@ -32,4 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/checkout', [OrderController::class, 'checkout']);           // ยืนยันคำสั่งซื้อ
     Route::post('/reviews', [OrderController::class, 'store']);
     Route::post('/reviews', [ReviewController::class, 'store']);              // รีวิวคอร์สเรียน
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
