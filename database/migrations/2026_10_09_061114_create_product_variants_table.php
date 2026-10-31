@@ -10,16 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::create('product_variants', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('product_id')->constrained()->onDelete('cascade');
-        $table->string('size');
-        $table->string('color');
-        $table->integer('stock_quantity')->default(0);
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('product_variants', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->text('size')->nullable();
+            $table->longText('color')->nullable();
+            $table->integer('stock_quantity')->default(0);
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

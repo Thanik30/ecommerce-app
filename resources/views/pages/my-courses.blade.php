@@ -80,37 +80,38 @@
     let purchasedCourses = [];
 
     async function loadMyCoursesPage() {
-        if (!authToken) {
+        // ให้ฟังก์ชันส่วนกลางยืนยันตัวตนด้วย Cookie 
+        await fetchMemberProfile();
+        
+        // เช็คจาก currentUser แทน authToken
+        if (!currentUser) {
             window.location.href = '/';
             return;
         }
-        await fetchMemberProfile();
 
         // อัปเดตข้อมูลหัวหน้าเว็บ
-        if (currentUser) {
-            const displayName = currentUser.tutor_alias || currentUser.name;
-            const avatarUrl = currentUser.avatar_url || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=0066FF&color=fff&bold=true');
-            document.getElementById('myCoursesAvatar').src = avatarUrl;
-            document.getElementById('myCoursesUserName').textContent = displayName;
-            document.getElementById('myCoursesUserDept').textContent = `${currentUser.department || currentUser.address || 'สาขาวิศวกรรมคอมพิวเตอร์'} • ${currentUser.email}`;
+        const displayName = currentUser.tutor_alias || currentUser.name;
+        const avatarUrl = currentUser.avatar_url || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=0066FF&color=fff&bold=true');
+        document.getElementById('myCoursesAvatar').src = avatarUrl;
+        document.getElementById('myCoursesUserName').textContent = displayName;
+        document.getElementById('myCoursesUserDept').textContent = `${currentUser.department || currentUser.address || 'สาขาวิศวกรรมคอมพิวเตอร์'} | ${currentUser.email}`;
 
-            const roleBadge = document.getElementById('myCoursesRoleBadge');
-            const actionBtn = document.getElementById('myCoursesActionBtn');
-            if (currentUser.role === 'tutor') {
-                roleBadge.textContent = `✓ ติวเตอร์ (ชื่อจริง: ${currentUser.real_name || currentUser.name})`;
-                roleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800';
-                actionBtn.textContent = '+ ลงขายคอร์สเรียนใหม่';
-                actionBtn.href = '/create-course';
-            } else {
-                roleBadge.textContent = 'สถานะ: นักศึกษาทั่วไป';
-                actionBtn.textContent = '🎓 สมัครเป็นติวเตอร์';
-                actionBtn.href = '/apply-tutor';
-            }
+        const roleBadge = document.getElementById('myCoursesRoleBadge');
+        const actionBtn = document.getElementById('myCoursesActionBtn');
+        if (currentUser.role === 'tutor') {
+            roleBadge.textContent = `✓ ติวเตอร์ (ชื่อจริง: ${currentUser.real_name || currentUser.name})`;
+            roleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800';
+            actionBtn.textContent = '+ ลงขายคอร์สเรียนใหม่';
+            actionBtn.href = '/create-course';
+        } else {
+            roleBadge.textContent = 'สถานะ: นักศึกษาทั่วไป';
+            actionBtn.textContent = '🎓 สมัครเป็นติวเตอร์';
+            actionBtn.href = '/apply-tutor';
         }
 
         const [prodRes, myRes] = await Promise.all([
-            fetch('/api/products', { headers: { 'Accept': 'application/json' } }),
-            fetch('/api/my-courses', { headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` } })
+            fetch('/api/products', { headers: { 'Accept': 'application/json' }, credentials: 'include' }),
+            fetch('/api/my-courses', { headers: { 'Accept': 'application/json' }, credentials: 'include' }) // ลบ Authorization
         ]);
 
         const prodJson = await prodRes.json();

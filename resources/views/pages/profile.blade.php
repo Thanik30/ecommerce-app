@@ -80,8 +80,9 @@
 
         const res = await fetch('/api/profile/update', {
             method: 'POST',
-            headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` },
-            body: formData
+            headers: { 'Accept': 'application/json' },
+            body: formData,
+            credentials: 'include' // เปิดรับ Cookie
         });
         const data = await res.json();
         if (!res.ok) {
@@ -89,7 +90,7 @@
             return;
         }
         currentUser = data.user;
-        localStorage.setItem('cached_user', JSON.stringify(currentUser));
+        // ลบคำสั่ง localStorage.setItem ทิ้งไปแล้ว
         updateAuthUI();
         document.getElementById('profilePreviewAvatar').src = currentUser.avatar_url;
         showToast('✓ บันทึกโปรไฟล์และรูปภาพลงตาราง users เรียบร้อยแล้ว!');

@@ -9,18 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('avatar_url')->nullable();
+            $table->longText('avatar_url')->nullable();
             $table->string('real_name')->nullable();
             $table->string('tutor_alias')->nullable();
             $table->string('student_id')->nullable();
             $table->string('department')->nullable();
             $table->decimal('gpax', 3, 2)->nullable();
             $table->string('transcript_url')->nullable();
-            $table->string('id_card_url')->nullable();
+            $table->longText('id_card_url')->nullable();
         });
 
         Schema::table('products', function (Blueprint $table) {
-            $table->string('video_url')->nullable();
+            $table->longText('video_url')->nullable();
             $table->string('pdf_url')->nullable();
             $table->decimal('hours_num', 5, 1)->default(20);
             $table->string('duration')->default('12 เดือน');

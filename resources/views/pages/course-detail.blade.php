@@ -163,7 +163,10 @@
     let currentCourse = null;
 
     async function loadCourseDetail() {
-        const res = await fetch('/api/products', { headers: { 'Accept': 'application/json' } });
+        const res = await fetch('/api/products', { 
+            headers: { 'Accept': 'application/json' },
+            credentials: 'include' // เพิ่มบรรทัดนี้
+        });
         const json = await res.json();
         const courses = json.data || [];
         currentCourse = courses.find(c => Number(c.id) === targetCourseId);
@@ -257,7 +260,8 @@
 
     async function submitReview(e) {
         e.preventDefault();
-        if (!authToken) {
+        // เปลี่ยนจากเช็ค authToken เป็น currentUser
+        if (!currentUser) {
             openAuthModal('login');
             return;
         }
@@ -265,8 +269,9 @@
         const comment = document.getElementById('reviewComment').value.trim();
         const res = await fetch('/api/reviews', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` },
-            body: JSON.stringify({ product_id: currentCourse.id, rating, comment })
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, // ลบ Authorization
+            body: JSON.stringify({ product_id: currentCourse.id, rating, comment }),
+            credentials: 'include' // เพิ่มบรรทัดนี้
         });
         if (res.ok) {
             document.getElementById('reviewComment').value = '';
@@ -277,12 +282,12 @@
 
     window.onPageLanguageChanged = () => renderCourseDetail();
     window.onAuthChanged = async () => {
-        await fetchPurchasedIds();
+        if (typeof fetchPurchasedIds === 'function') await fetchPurchasedIds();
         renderCourseDetail();
     };
 
     document.addEventListener('DOMContentLoaded', async () => {
-        await fetchPurchasedIds();
+        if (typeof fetchPurchasedIds === 'function') await fetchPurchasedIds();
         await loadCourseDetail();
     });
 </script>

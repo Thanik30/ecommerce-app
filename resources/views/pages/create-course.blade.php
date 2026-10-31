@@ -184,12 +184,13 @@
         try {
             const res = await fetch('/api/products', {
                 method: 'POST',
-                headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` },
-                body: formData
+                headers: { 'Accept': 'application/json' }, // ลบ Authorization
+                body: formData,
+                credentials: 'include' // เพิ่มการส่ง Cookie
             });
             const data = await res.json();
             if (!res.ok) {
-                showToast(data.message || 'อัปโหลดไม่สำเร็จ กรุณาเช็คขนาดไฟล์หรือสิทธิ์โฟลเดอร์บน Ubuntu', true);
+                showToast(data.message || 'อัปโหลดไม่สำเร็จ กรุณาเช็คขนาดไฟล์หรือสิทธิ์โฟลเดอร์', true);
                 btn.disabled = false;
                 btn.textContent = '🚀 อัปโหลดคลิปและวางขายคอร์สเรียน';
                 return;
@@ -197,7 +198,7 @@
             showToast('🎉 อัปโหลดคลิปวิดีโอและเปิดขายคอร์สเรียนสำเร็จ!');
             setTimeout(() => { window.location.href = '/my-courses'; }, 900);
         } catch (err) {
-            showToast('เกิดข้อผิดพลาดในการอัปโหลด (แนะนำให้รันเซิร์ฟเวอร์ด้วย -d post_max_size=200M)', true);
+            showToast('เกิดข้อผิดพลาดในการอัปโหลด', true);
             btn.disabled = false;
             btn.textContent = '🚀 อัปโหลดคลิปและวางขายคอร์สเรียน';
         }
