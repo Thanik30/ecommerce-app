@@ -9,13 +9,13 @@
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-8">
             <div class="max-w-3xl mx-auto text-center space-y-3.5">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-academic-blue text-xs font-semibold" data-i18n="hero_badge">
-                    แพลตฟอร์มคอร์สเรียนคณะวิศวกรรมศาสตร์
+                    เรียนพิเศษกับ ENGTutor.
                 </span>
                 <h1 class="text-xl sm:text-3xl font-bold text-slate-900" data-i18n="hero_title">
-                    ค้นหาคอร์สติวและสรุปเนื้อหาจากรหัสวิชา 6 หลัก
+                    ค้นหาคอร์สติว
                 </h1>
                 <p class="text-slate-600 text-xs sm:text-sm leading-relaxed" data-i18n="hero_subtitle">
-                    เรียนกับติวเตอร์รุ่นพี่ในคณะวิศวกรรมศาสตร์ที่ผ่านการยืนยันตัวตนและผลการเรียน พร้อมคลิปวิดีโอและเอกสาร PDF
+                    บริการสำหรับนักศึกษาที่อยากหาติวเตอร์สอนพิเศษและเป็นบริการสำหรับติวเตอร์ที่อยากเปิดสอนคอร์สเรียนออนไลน์
                 </p>
 
                 <div class="pt-2 flex flex-col sm:flex-row gap-2.5 max-w-2xl mx-auto">
@@ -24,7 +24,7 @@
                             id="courseCodeSearchInput"
                             type="text"
                             oninput="handleSearchInput(this.value)"
-                            placeholder="พิมพ์รหัสวิชา 6 หลัก เช่น 259104, 251201, 252211, 261342..."
+                            placeholder="พิมพ์รหัสวิชา 6 หลัก"
                             class="w-full pl-4 pr-12 py-3 rounded-xl bg-white border border-slate-300 focus:border-academic-blue focus:outline-none text-sm text-slate-800"
                         >
                         <button id="clearSearchBtn" onclick="setQuickSearch('')" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 font-bold cursor-pointer">✕</button>
@@ -54,7 +54,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div class="flex items-center gap-2.5">
                 <div class="w-1.5 h-6 bg-academic-blue rounded-full"></div>
-                <h2 class="text-base sm:text-lg font-bold text-slate-900" data-i18n="dept_filter_title">แยกตามสาขาวิชา (รหัสขึ้นต้น 3 หลัก)</h2>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900" data-i18n="dept_filter_title">แยกตามสาขาวิชา</h2>
             </div>
             <span id="courseCountText" class="text-xs text-slate-500 font-medium"></span>
         </div>

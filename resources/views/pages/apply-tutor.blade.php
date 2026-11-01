@@ -22,18 +22,18 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ-นามสกุลจริง (สำหรับแอดมินตรวจสอบ) *</label>
-                    <input id="tutorRealName" type="text" required placeholder="เช่น นายธิษณ์ธาวิน คงนา" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-academic-blue focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ-นามสกุลจริง *</label>
+                    <input id="tutorRealName" type="text" required placeholder="เช่น นายสมชาย สายชม" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-academic-blue focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อติวเตอร์ / นามแฝงที่ใช้โชว์หน้าเว็บ *</label>
-                    <input id="tutorAliasName" type="text" required placeholder="เช่น เสี่ยไอซ์" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-academic-blue focus:outline-none font-bold text-academic-blue">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อติวเตอร์ *</label>
+                    <input id="tutorAliasName" type="text" required placeholder="เช่น ม้านิลมังกร" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-academic-blue focus:outline-none font-bold text-academic-blue">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสนักศึกษา (9 หลัก) *</label>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสนักศึกษา *</label>
                     <input id="tutorStudentId" type="text" required placeholder="670610xxx" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-academic-blue focus:outline-none">
                 </div>
                 <div>
@@ -71,7 +71,7 @@
             <div class="pt-3 flex gap-3">
                 <a href="/" class="w-1/3 py-3 rounded-xl border border-slate-300 text-slate-600 font-semibold text-center">ยกเลิก</a>
                 <button type="submit" class="w-2/3 py-3 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold cursor-pointer">
-                    ✓ ยืนยันตัวตนและเปิดสิทธิ์ติวเตอร์
+                    ✓ ยืนยันตัวตน
                 </button>
             </div>
         </form>

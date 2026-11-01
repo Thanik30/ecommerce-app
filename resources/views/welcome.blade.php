@@ -72,7 +72,7 @@
                         <img id="navUserAvatar" src="" class="w-7 h-7 rounded-full object-cover border border-white shadow-2xs">
                         <span id="navUserName" class="max-w-[90px] sm:max-w-[120px] truncate">นักศึกษา</span>
                     </button>
-                    <button onclick="logout()" class="whitespace-nowrap px-2.5 py-2 rounded-lg border border-slate-200 hover:bg-rose-50 hover:text-rose-600 text-slate-500 text-xs font-medium transition cursor-pointer">ออก</button>
+                    <button onclick="logout()" class="whitespace-nowrap px-2.5 py-2 rounded-lg border border-slate-200 hover:bg-rose-50 hover:text-rose-600 text-slate-500 text-xs font-medium transition cursor-pointer">ออกระบบ</button>
                 </div>
             </div>
         </div>

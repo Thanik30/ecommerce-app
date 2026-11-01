@@ -48,8 +48,8 @@
                     <button onclick="copyCoupon('PASSA100')" class="underline font-semibold text-sky-300 hover:text-white cursor-pointer">PASSA100</button> (-100฿)
                 </span>
             </div>
-            <button onclick="openContactAdminModal('ติดต่อแอดมิน')" class="text-sky-300 hover:text-white underline text-xs cursor-pointer" data-i18n="nav_contact_admin">
-                ติดต่อแอดมิน
+            <button onclick="openContactAdminModal('ติดต่อผู้ดูแล')" class="text-sky-300 hover:text-white underline text-xs cursor-pointer" data-i18n="nav_contact_admin">
+                ติดต่อผู้ดูแล
             </button>
         </div>
     </div>
@@ -61,7 +61,6 @@
                 <div class="w-9 h-9 rounded-lg bg-academic-blue flex items-center justify-center text-white font-bold text-lg">E</div>
                 <div>
                     <span class="text-lg font-bold tracking-tight text-slate-900 block leading-none">EngTutor</span>
-                    <span class="text-[11px] text-slate-500 block mt-0.5">Engineering Course Platform</span>
                 </div>
             </a>
 
@@ -76,10 +75,10 @@
                     สมัครเป็นติวเตอร์
                 </a>
                 <a id="navBtnCreateCourse" href="/create-course" class="hidden whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-semibold transition {{ request()->is('create-course') ? 'bg-emerald-600 text-white shadow-xs' : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100' }}" data-i18n="nav_create_course">
-                    + ลงขายคอร์สเรียน
+                    ลงขายคอร์สเรียน
                 </a>
-                <button onclick="openContactAdminModal('ติดต่อแอดมิน')" class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer text-slate-600 hover:text-slate-900" data-i18n="nav_contact_admin">
-                    ติดต่อแอดมิน
+                <button onclick="openContactAdminModal('ติดต่อผู้ดูแล')" class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition cursor-pointer text-slate-600 hover:text-slate-900" data-i18n="nav_contact_admin">
+                    ติดต่อผู้ดูแล
                 </button>
             </nav>
 
@@ -109,7 +108,7 @@
                         <span id="navTutorBadge" class="hidden px-1.5 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-bold">TUTOR</span>
                     </a>
                     <button onclick="logout()" class="whitespace-nowrap px-2.5 py-2 rounded-lg border border-slate-200 hover:bg-rose-50 hover:text-rose-600 text-slate-500 text-xs font-medium transition cursor-pointer" data-i18n="nav_logout">
-                        ออก
+                        ออกจากระบบ
                     </button>
                 </div>
             </div>
@@ -136,7 +135,7 @@
                 <span data-i18n="footer_subtitle">— แพลตฟอร์มคอร์สเรียนและติวเตอร์คณะวิศวกรรมศาสตร์</span>
             </div>
             <div class="flex items-center gap-4">
-                <button onclick="openContactAdminModal('ติดต่อแอดมิน')" class="text-academic-blue hover:underline font-medium cursor-pointer" data-i18n="nav_contact_admin">ติดต่อแอดมิน</button>
+                <button onclick="openContactAdminModal('ติดต่อผู้ดูแล')" class="text-academic-blue hover:underline font-medium cursor-pointer" data-i18n="nav_contact_admin">ติดต่อผู้ดูแล</button>
                 <span>Thank you for using</span>
             </div>
         </div>
@@ -148,7 +147,7 @@
             <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-base" data-i18n="nav_cart">ตะกร้าคอร์สเรียน</h3>
-                    <p class="text-xs text-slate-300 mt-0.5" data-i18n="cart_subtitle">สามารถกรอกโค้ดส่วนลดเพิ่มได้ (โค้ดแต่ละรหัสใช้ได้ 1 ครั้ง)</p>
+                    <p class="text-xs text-slate-300 mt-0.5" data-i18n="cart_subtitle">สามารถกรอกโค้ดส่วนลดเพิ่มได้</p>
                 </div>
                 <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 flex items-center justify-center font-bold cursor-pointer">✕</button>
             </div>
@@ -159,7 +158,7 @@
                 <div id="appliedCouponsBadges" class="hidden flex-wrap items-center gap-1.5"></div>
 
                 <form onsubmit="handleApplyCoupon(event)" class="flex gap-2">
-                    <input id="couponInput" type="text" placeholder="กรอกโค้ด เช่น ENGMID20 หรือ PASSA100" class="flex-1 px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm font-semibold uppercase focus:outline-none focus:border-academic-blue">
+                    <input id="couponInput" type="text" placeholder="กรอกโค้ดส่วนลด" class="flex-1 px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-sm font-semibold uppercase focus:outline-none focus:border-academic-blue">
                     <button id="couponSubmitBtn" type="submit" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs sm:text-sm transition cursor-pointer shrink-0" data-i18n="btn_apply_code">
                         ใช้โค้ด
                     </button>
@@ -187,17 +186,14 @@
         </div>
     </div>
 
-    <!-- MODAL: ติดต่อแอดมิน -->
+    <!-- MODAL: ติดต่อผู้ดูแล -->
     <div id="contactAdminModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200">
             <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
-                <h3 class="font-bold text-base" data-i18n="nav_contact_admin">ติดต่อแอดมินผู้ดูแลระบบ</h3>
+                <h3 class="font-bold text-base" data-i18n="nav_contact_admin">ติดต่อผู้ดูแลผู้ดูแลระบบ</h3>
                 <button onclick="closeContactAdminModal()" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 flex items-center justify-center font-bold cursor-pointer">✕</button>
             </div>
             <form onsubmit="handleSendAdminMessage(event)" class="p-6 space-y-4 text-sm">
-                <div class="p-3 rounded-xl bg-slate-100 text-xs text-slate-600 leading-relaxed" data-i18n="admin_modal_desc">
-                    สำหรับการแจ้งแก้ไขราคาคอร์ส แก้ไขรายละเอียดคอร์สที่วางขายแล้ว การขอจัดโปรโมชันลดราคา หรือแจ้งปัญหาการใช้งาน (ดำเนินการโดยแอดมินเท่านั้น)
-                </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1" data-i18n="label_topic">หัวข้อติดต่อ *</label>
                     <input id="adminTopicInput" type="text" required class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:border-academic-blue focus:outline-none font-semibold">
@@ -208,7 +204,7 @@
                 </div>
                 <div class="flex gap-2">
                     <button type="button" onclick="closeContactAdminModal()" class="w-1/3 py-2.5 rounded-lg border border-slate-300 text-slate-600 font-semibold cursor-pointer" data-i18n="btn_cancel">ยกเลิก</button>
-                    <button type="submit" class="w-2/3 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold cursor-pointer" data-i18n="btn_send_admin">ส่งเรื่องให้แอดมิน</button>
+                    <button type="submit" class="w-2/3 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold cursor-pointer" data-i18n="btn_send_admin">ส่งเรื่องให้ผู้ดูแล</button>
                 </div>
             </form>
         </div>
@@ -298,50 +294,50 @@
                 nav_search_courses: 'ค้นหาคอร์สเรียน',
                 nav_my_courses: 'คอร์สของฉัน',
                 nav_apply_tutor: 'สมัครเป็นติวเตอร์',
-                nav_create_course: '+ ลงขายคอร์สเรียน',
-                nav_contact_admin: 'ติดต่อแอดมิน',
+                nav_create_course: 'ลงขายคอร์สเรียน',
+                nav_contact_admin: 'ติดต่อผู้ดูแล',
                 nav_profile: 'โปรไฟล์',
                 nav_cart: 'ตะกร้า',
                 nav_login: 'เข้าสู่ระบบ',
-                nav_logout: 'ออก',
+                nav_logout: 'ออกจากระบบ',
                 btn_register: 'สมัครสมาชิก',
                 btn_cancel: 'ยกเลิก',
-                btn_send_admin: 'ส่งเรื่องให้แอดมิน',
+                btn_send_admin: 'ส่งเรื่องให้ผู้ดูแล',
                 btn_apply_code: 'ใช้โค้ด',
                 btn_checkout: 'ยืนยันการชำระเงิน',
-                cart_subtitle: 'สามารถกรอกโค้ดส่วนลดเพิ่มได้ (โค้ดแต่ละรหัสใช้ได้ 1 ครั้ง)',
+                cart_subtitle: 'สามารถกรอกโค้ดส่วนลดเพิ่มได้',
                 cart_original_total: 'ราคารวมปกติ',
                 cart_net_total: 'ยอดชำระสุทธิ:',
-                admin_modal_desc: 'สำหรับการแจ้งแก้ไขราคาคอร์ส แก้ไขรายละเอียดคอร์สที่วางขายแล้ว การขอจัดโปรโมชันลดราคา หรือแจ้งปัญหาการใช้งาน (ดำเนินการโดยแอดมินเท่านั้น)',
+                admin_modal_desc: 'สำหรับการแจ้งแก้ไขราคาคอร์ส แก้ไขรายละเอียดคอร์สที่วางขายแล้ว การขอจัดโปรโมชันลดราคา หรือแจ้งปัญหาการใช้งาน (ดำเนินการโดยผู้ดูแลเท่านั้น)',
                 label_topic: 'หัวข้อติดต่อ *',
                 label_details: 'รายละเอียด *',
                 footer_subtitle: '— แพลตฟอร์มคอร์สเรียนและติวเตอร์คณะวิศวกรรมศาสตร์',
-                hero_badge: 'แพลตฟอร์มคอร์สเรียนคณะวิศวกรรมศาสตร์',
-                hero_title: 'ค้นหาคอร์สติวและสรุปเนื้อหาจากรหัสวิชา 6 หลัก',
-                hero_subtitle: 'เรียนกับติวเตอร์รุ่นพี่ในคณะวิศวกรรมศาสตร์ที่ผ่านการยืนยันตัวตนและผลการเรียน พร้อมคลิปวิดีโอและเอกสาร PDF',
+                hero_badge: 'ENG TUTOR — แพลตฟอร์มติวเตอร์จากนักศึกษาคณะวิศวกรรมศาสตร์',
+                hero_title: 'ค้นหาคอร์สติว',
+                hero_subtitle: 'แพลตฟอร์มที่เชื่อมโยงนักศึกษาที่ต้องการเรียนพิเศษกับนักศึกษาที่ต้องการรับสอนพิเศษ',
                 btn_search: 'ค้นหาวิชา',
                 popular_codes: 'รหัสวิชายอดนิยม:',
-                dept_filter_title: 'แยกตามสาขาวิชา (รหัสขึ้นต้น 3 หลัก)',
+                dept_filter_title: 'แยกตามสาขาวิชา',
                 all_depts: 'ทุกสาขาวิชา',
                 unit_hours: 'ชั่วโมง',
                 unit_baht: 'บาท',
                 btn_detail: 'ดูรายละเอียด',
                 btn_buy: 'สั่งซื้อ',
-                btn_purchased_watch: '✓ ซื้อแล้ว (เข้าเรียน)',
-                btn_back_catalog: '← ย้อนกลับไปหน้ารวมคอร์สเรียน',
+                btn_purchased_watch: 'เข้าเรียน',
+                btn_back_catalog: 'กลับไปหน้ารวมคอร์สเรียน',
                 label_course_hours: 'ชั่วโมงคอร์ส',
                 label_course_duration: 'อายุคอร์สเรียน',
                 label_suitable_for: 'เหมาะสำหรับ :',
                 label_course_desc: 'รายละเอียดคอร์ส :',
-                btn_contact_tutor: '💬 ติดต่อผู้สอน',
-                section_syllabus: 'หัวข้อบทเรียนในคอร์ส (Syllabus)',
+                btn_contact_tutor: 'ติดต่อผู้สอน',
+                section_syllabus: 'หัวข้อบทเรียน',
                 section_instructor_reviews: 'ข้อมูลผู้สอนและรีวิวจากผู้เรียน',
                 write_review_label: 'เขียนรีวิวให้คอร์สเรียนนี้:',
                 my_courses_title: 'คอร์สเรียนที่ซื้อแล้ว & คลิปสอนของฉัน',
-                tab_purchased: '📚 คอร์สที่ฉันซื้อแล้ว',
-                tab_uploaded: '📹 คลิปสอนที่ฉันลงขาย',
-                profile_page_title: 'ตั้งค่าโปรไฟล์และรูปภาพของฉัน',
-                apply_tutor_title: 'สมัครและยืนยันตัวตนเพื่อเป็นติวเตอร์คณะวิศวกรรมศาสตร์',
+                tab_purchased: 'คอร์สเรียนของฉัน',
+                tab_uploaded: 'คลิปสอนของฉัน',
+                profile_page_title: 'ตั้งค่าโปรไฟล์',
+                apply_tutor_title: 'สมัครและยืนยันตัวตนเพื่อเป็นติวเตอร์',
                 create_course_title: 'อัปโหลดคลิปวิดีโอและลงขายคอร์สเรียนใหม่'
             },
             en: {
@@ -834,7 +830,7 @@
             } catch (err) {}
         }
 
-        function openContactAdminModal(topic = 'ติดต่อแอดมิน') {
+        function openContactAdminModal(topic = 'ติดต่อผู้ดูแล') {
             document.getElementById('adminTopicInput').value = topic;
             document.getElementById('adminMessageInput').value = '';
             document.getElementById('contactAdminModal').classList.remove('hidden');
@@ -845,7 +841,7 @@
         function handleSendAdminMessage(e) {
             e.preventDefault();
             closeContactAdminModal();
-            showToast('🛠️ ส่งเรื่องถึงแอดมินเรียบร้อยแล้ว แอดมินจะดำเนินการตรวจสอบให้โดยเร็วที่สุด');
+            showToast('🛠️ ส่งเรื่องถึงผู้ดูแลเรียบร้อยแล้ว ผู้ดูแลจะดำเนินการตรวจสอบให้โดยเร็วที่สุด');
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
