@@ -18,11 +18,11 @@
             </div>
         </div>
         <div class="flex flex-wrap items-center gap-2.5">
-            <a href="/profile" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition cursor-pointer" data-i18n="btn_edit_profile">
-                ⚙️ แก้ไขโปรไฟล์ / รูปภาพ
+            <a href="/profile" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition cursor-pointer">
+                แก้ไขโปรไฟล์
             </a>
             <a id="myCoursesActionBtn" href="/apply-tutor" class="px-4 py-2 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold text-xs sm:text-sm transition cursor-pointer">
-                🎓 สมัครเป็นติวเตอร์
+                สมัครเป็นติวเตอร์
             </a>
         </div>
     </div>
@@ -30,10 +30,10 @@
     <!-- แท็บสลับ -->
     <div class="border-b border-slate-200 flex items-center gap-6 overflow-x-auto">
         <button id="subTabPurchased" onclick="switchSubTab('purchased')" class="whitespace-nowrap pb-3 border-b-2 border-academic-blue text-academic-blue font-bold text-sm sm:text-base transition cursor-pointer">
-            📚 คอร์สที่ฉันซื้อแล้ว (0)
+            คอร์สเรียนของที่ฉัน
         </button>
         <button id="subTabUploaded" onclick="switchSubTab('uploaded')" class="whitespace-nowrap pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm sm:text-base transition cursor-pointer">
-            📹 คลิปสอนที่ฉันลงขาย (0)
+            คลิปสอนของฉัน
         </button>
     </div>
 
@@ -58,7 +58,9 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">มูลค่าที่ลด *</label>
-                    <input id="tutorCouponValue" type="number" min="1" required placeholder="เช่น 20" class="w-28 px-3 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:border-emerald-500">
+                    <input id="tutorCouponValue" type="number" min="1" required placeholder="เช่น 20" 
+                        oninput="if(document.getElementById('tutorCouponType').value === 'percentage' && this.value > 100) this.value = 100;" 
+                        class="w-28 px-3 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:border-academic-blue">
                 </div>
                 <button type="submit" class="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm cursor-pointer transition">สร้างโค้ด</button>
             </form>
@@ -134,7 +136,7 @@
             if (currentUser.role === 'tutor') {
                 roleBadge.textContent = `✓ ติวเตอร์ (ชื่อจริง: ${currentUser.real_name || currentUser.name})`;
                 roleBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800';
-                actionBtn.textContent = '+ ลงขายคอร์สเรียนใหม่';
+                actionBtn.textContent = 'ลงขายคอร์สเรียน';
                 actionBtn.href = '/create-course';
             } else {
                 roleBadge.textContent = 'สถานะ: นักศึกษาทั่วไป';
@@ -192,8 +194,8 @@
             ? allCourses.filter(c => parseCourseMeta(c).ownerEmail === currentUser.email)
             : [];
 
-        document.getElementById('subTabPurchased').textContent = `📚 คอร์สที่ฉันซื้อแล้ว (${purchasedCourses.length})`;
-        document.getElementById('subTabUploaded').textContent = `📹 คลิปสอนที่ฉันลงขาย (${uploadedCourses.length})`;
+        document.getElementById('subTabPurchased').textContent = `คอร์สเรียนของฉัน (${purchasedCourses.length})`;
+        document.getElementById('subTabUploaded').textContent = `คลิปสอนของฉัน (${uploadedCourses.length})`;
 
         // แสดงคอร์สที่ซื้อแล้ว
         if (purchasedCourses.length === 0) {
@@ -248,7 +250,7 @@
                 uGrid.innerHTML = `
                     <div class="col-span-full bg-white rounded-2xl p-10 text-center border border-slate-200 space-y-3 shadow-sm">
                         <p class="text-base font-bold text-slate-800">คุณยังไม่มีคอร์สเรียนที่เปิดขาย</p>
-                        <a href="/create-course" class="inline-block px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold">+ ลงขายคอร์สเรียนวิชาแรกของคุณ</a>
+                        <a href="/create-course" class="inline-block px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold">ลงขายคอร์สเรียนวิชาแรกของคุณ</a>
                     </div>
                 `;
             } else {

@@ -20,9 +20,12 @@
             <!-- รหัสวิชา 6 หลัก (ไม่ต้องเลือกหมวดหมู่สาขาเอง) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสวิชา 6 หลัก (ระบบจัดหมวดสาขาให้อัตโนมัติ) *</label>
-                    <input id="newCourseSku" type="text" required pattern="\d{6}" maxlength="6" oninput="updateAutoCategoryBadge(this.value)" placeholder="เช่น 261342 หรือ 259104" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-academic-blue focus:outline-none font-bold text-academic-blue">
-                    <span id="autoDetectedCategoryText" class="text-[11px] text-emerald-700 font-medium block mt-1">พิมพ์รหัส 6 หลัก เช่น 261xxx = วิศวกรรมคอมพิวเตอร์</span>
+                    <label class="block text-xs font-semibold mb-1">รหัสวิชา 6 หลัก (ระบบจัดหมวดสาขาให้อัตโนมัติ) *</label>
+                    <input id="newCourseSku" type="text" required pattern="\d{6}" maxlength="6" 
+                        oninput="updateCategoryHelper(this.value)"
+                        class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:border-academic-blue">
+                    <!-- ข้อความแจ้งเตือนหมวดหมู่จะเปลี่ยนอัตโนมัติ -->
+                    <p id="skuCategoryHelper" class="text-[11px] text-slate-500 mt-1 font-medium">รอการกรอกรหัส 3 ตัวหน้า...</p>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">รูปแบบเนื้อหา *</label>
@@ -86,8 +89,8 @@
             <!-- ส่วนอัปโหลดหลายคลิปแยกบทเรียน -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3" id="lessonsContainer">
                 <div class="flex items-center justify-between">
-                    <label class="block text-xs font-bold text-slate-800">🎬 อัปโหลดคลิปวิดีโอการสอน (แยกทีละบท) *</label>
-                    <button type="button" onclick="addLessonRow()" class="text-xs bg-academic-blue text-white px-3 py-1.5 rounded-lg cursor-pointer">+ เพิ่มบทเรียน</button>
+                    <label class="block text-xs font-bold text-slate-800">อัปโหลดคลิปวิดีโอการสอน *</label>
+                    <button type="button" onclick="addLessonRow()" class="text-xs bg-academic-blue text-white px-3 py-1.5 rounded-lg cursor-pointer">เพิ่มบทเรียน</button>
                 </div>
                 <!-- แถวสำหรับใส่บทเรียนแรก -->
                 <div class="lesson-row flex flex-col sm:flex-row gap-2 items-center bg-slate-50 p-2.5 rounded-lg border border-slate-200">
@@ -99,7 +102,7 @@
     <!-- 2. อัปโหลดไฟล์รูปปกคอร์ส -->
     <div class="bg-white p-4 rounded-xl border border-slate-200 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
         <div class="sm:col-span-8">
-            <label class="block text-xs font-bold text-slate-800 mb-1">🖼️ อัปโหลดไฟล์รูปปกคอร์สเรียน (.jpg, .png, .webp) *</label>
+            <label class="block text-xs font-bold text-slate-800 mb-1">อัปโหลดไฟล์รูปปกคอร์สเรียน (.jpg, .png, .webp) *</label>
             <input id="newCourseCoverFile" type="file" accept="image/*" required onchange="previewCourseCover(event)" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-academic-blue file:text-white file:font-semibold cursor-pointer">
         </div>
         <div class="sm:col-span-4 flex justify-center">
@@ -120,7 +123,7 @@
             <div class="pt-3 flex gap-3">
                 <a href="/my-courses" class="w-1/3 py-3 rounded-xl border border-slate-300 text-slate-600 font-semibold text-center">ยกเลิก</a>
                 <button id="submitCourseBtn" type="submit" class="w-2/3 py-3 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold cursor-pointer">
-                    🚀 อัปโหลดคลิปและวางขายคอร์สเรียน
+                    อัปโหลดคลิปและวางขายคอร์สเรียน
                 </button>
             </div>
         </form>
@@ -142,24 +145,44 @@
         container.appendChild(row);
     }
 
-    function updateAutoCategoryBadge(skuVal) {
-        const prefix = skuVal.trim().substring(0, 3);
-        const labelEl = document.getElementById('autoDetectedCategoryText');
-        const map = {
-            '259': 'วิชาแกนวิศวกรรมพื้นฐาน (259xxx)',
-            '251': 'วิศวกรรมโยธา (251xxx)',
-            '252': 'วิศวกรรมไฟฟ้า (252xxx)',
-            '254': 'วิศวกรรมเครื่องกล (254xxx)',
-            '255': 'วิศวกรรมอุตสาหการ (255xxx)',
-            '261': 'วิศวกรรมคอมพิวเตอร์ (261xxx)',
-            '206': 'คณิตศาสตร์วิศวกรรม (206xxx)',
-        };
-        if (map[prefix]) {
-            labelEl.textContent = `✓ จัดเข้าหมวดหมู่: ${map[prefix]} อัตโนมัติ`;
-        } else {
-            labelEl.textContent = 'ระบบจะจัดเข้าหมวดวิชาแกนวิศวกรรมพื้นฐานให้อัตโนมัติ';
-        }
+    function updateCategoryHelper(val) {
+    const helperText = document.getElementById('skuCategoryHelper');
+    
+    // ถ้ายาวไม่ถึง 3 ตัว ยังไม่แสดงผล
+    if (val.length < 3) {
+        helperText.textContent = "รอการกรอกรหัส 3 ตัวหน้า...";
+        helperText.className = "text-[11px] text-slate-500 mt-1 font-medium";
+        return;
     }
+
+    const prefix = val.substring(0, 3);
+    let categoryName = "";
+    let isOther = false;
+
+    // เช็คเงื่อนไขตามรหัสคณะวิศวะ (เพิ่ม-ลดได้ตามต้องการ)
+    switch (prefix) {
+        case '259': categoryName = "หมวดวิชาแกนวิศวกรรมพื้นฐาน"; break;
+        case '261': categoryName = "หมวดหมู่ภาควิชาวิศวกรรมคอมพิวเตอร์"; break;
+        case '252': categoryName = "หมวดหมู่ภาควิชาวิศวกรรมไฟฟ้า"; break;
+        case '253': categoryName = "หมวดหมู่ภาควิชาวิศวกรรมอุตสาหการ"; break;
+        case '254': categoryName = "หมวดหมู่ภาควิชาวิศวกรรมเครื่องกล"; break;
+        case '256': categoryName = "หมวดหมู่ภาควิชาวิศวกรรมโยธา"; break;
+        case '258': categoryName = "หมวดหมู่ภาควิชาวิศวกรรมสิ่งแวดล้อม"; break;
+        default: 
+            categoryName = "หมวดหมู่อื่นๆ (Others)"; 
+            isOther = true;
+            break;
+    }
+
+    helperText.textContent = "ระบบจะจัดเข้า: " + categoryName;
+    
+    // เปลี่ยนสีข้อความเตือนให้ชัดเจนขึ้น ถ้าไปตกหมวดอื่นๆ
+    if (isOther) {
+        helperText.className = "text-[11px] text-amber-600 mt-1 font-bold";
+    } else {
+        helperText.className = "text-[11px] text-academic-blue mt-1 font-bold";
+    }
+}
 
     function previewCourseCover(event) {
         const file = event.target.files[0];
@@ -257,5 +280,7 @@
             updateAutoCategoryBadge(params.get('sku'));
         }
     });
+
+    
 </script>
 @endsection

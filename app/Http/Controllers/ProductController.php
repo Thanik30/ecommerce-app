@@ -148,26 +148,37 @@ class ProductController extends Controller
     }
 
     public function createCoupon(Request $request)
-    {
-        $user = $request->user();
-        if (!$user || $user->role !== 'tutor') {
-            return response()->json(['message' => 'เฉพาะติวเตอร์เท่านั้น'], 403);
-        }
-        
-        // 💡 แก้ไข: เพิ่ม min:1 ป้องกันการสร้างโค้ดติดลบ
-        $request->validate([
-            'code' => 'required|string|unique:coupons,code',
-            'discount_value' => 'required|numeric|min:1',
-            'discount_type' => 'required|string'
-        ]);
-        
-        Coupon::create([
-            'code' => strtoupper($request->code),
-            'discount_type' => $request->discount_type,
-            'discount_value' => $request->discount_value,
-            'owner_email' => $user->email,
-            'is_active' => true,
-        ]);
-        return response()->json(['message' => 'สร้างโค้ดสำเร็จ!']);
+{
+    $user = $request->user();
+    if (!$user || $user->role !== 'tutor') {
+        return response()->json(['message' => 'เฉพาะติวเตอร์เท่านั้น'], 403);
     }
+    
+    // ตั้งค่า Rules พื้นฐาน
+    $rules = [
+        'code' => 'required|string|unique:coupons,code',
+        'discount_type' => 'required|string|in:percentage,fixed',
+    ];
+
+    // ถ้าเลือกลดเป็นเปอร์เซ็นต์ ค่าตัวเลขต้องอยู่ระหว่าง 1 - 100 เท่านั้น
+    if ($request->discount_type === 'percentage') {
+        $rules['discount_value'] = 'required|numeric|min:1|max:100';
+    } else {
+        $rules['discount_value'] = 'required|numeric|min:1'; // ถ้าลดเป็นบาท ลดกี่บาทก็ได้
+    }
+
+    $request->validate($rules, [
+        'discount_value.max' => 'ส่วนลดแบบเปอร์เซ็นต์ สามารถลดได้สูงสุด 100% เท่านั้น'
+    ]);
+    
+    Coupon::create([
+        'code' => strtoupper($request->code),
+        'discount_type' => $request->discount_type,
+        'discount_value' => $request->discount_value,
+        'owner_email' => $user->email,
+        'is_active' => true,
+    ]);
+    
+    return response()->json(['message' => 'สร้างโค้ดส่วนลดสำเร็จ!']);
+}
 }
