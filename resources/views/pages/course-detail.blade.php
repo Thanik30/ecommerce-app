@@ -164,8 +164,7 @@
 
     async function loadCourseDetail() {
         const res = await fetch('/api/products', { 
-            headers: { 'Accept': 'application/json' },
-            credentials: 'include' // เพิ่มบรรทัดนี้
+            headers: { 'Accept': 'application/json' }
         });
         const json = await res.json();
         const courses = json.data || [];
@@ -260,8 +259,7 @@
 
     async function submitReview(e) {
         e.preventDefault();
-        // เปลี่ยนจากเช็ค authToken เป็น currentUser
-        if (!currentUser) {
+        if (!authToken) {
             openAuthModal('login');
             return;
         }
@@ -269,9 +267,12 @@
         const comment = document.getElementById('reviewComment').value.trim();
         const res = await fetch('/api/reviews', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, // ลบ Authorization
-            body: JSON.stringify({ product_id: currentCourse.id, rating, comment }),
-            credentials: 'include' // เพิ่มบรรทัดนี้
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${authToken}` // ส่ง Token ไปให้ API
+            },
+            body: JSON.stringify({ product_id: currentCourse.id, rating, comment })
         });
         if (res.ok) {
             document.getElementById('reviewComment').value = '';

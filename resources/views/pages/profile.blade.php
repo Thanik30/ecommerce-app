@@ -68,6 +68,12 @@
 
     async function handleUpdateProfile(e) {
         e.preventDefault();
+
+        if (!authToken) {
+            showToast('กรุณาเข้าสู่ระบบก่อนทำการบันทึกโปรไฟล์', true);
+            return;
+        }
+
         const formData = new FormData();
         formData.append('name', document.getElementById('profileName').value.trim());
         formData.append('department', document.getElementById('profileDepartment').value);
@@ -78,22 +84,28 @@
             formData.append('avatar_image', fileInput.files[0]);
         }
 
-        const res = await fetch('/api/profile/update', {
-            method: 'POST',
-            headers: { 'Accept': 'application/json' },
-            body: formData,
-            credentials: 'include' // เปิดรับ Cookie
-        });
-        const data = await res.json();
-        if (!res.ok) {
-            showToast(data.message || 'ไม่สามารถบันทึกโปรไฟล์ได้', true);
-            return;
+        try {
+            const res = await fetch('/api/profile/update', {
+                method: 'POST',
+                headers: { 
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${authToken}` // ส่ง Token ไปให้ API
+                },
+                body: formData
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                showToast(data.message || 'ไม่สามารถบันทึกโปรไฟล์ได้', true);
+                return;
+            }
+            currentUser = data.user;
+            localStorage.setItem('cached_user', JSON.stringify(currentUser));
+            updateAuthUI();
+            document.getElementById('profilePreviewAvatar').src = currentUser.avatar_url;
+            showToast('✓ บันทึกโปรไฟล์และรูปภาพลงตาราง users เรียบร้อยแล้ว!');
+        } catch (err) {
+            showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', true);
         }
-        currentUser = data.user;
-        // ลบคำสั่ง localStorage.setItem ทิ้งไปแล้ว
-        updateAuthUI();
-        document.getElementById('profilePreviewAvatar').src = currentUser.avatar_url;
-        showToast('✓ บันทึกโปรไฟล์และรูปภาพลงตาราง users เรียบร้อยแล้ว!');
     }
 
     document.addEventListener('DOMContentLoaded', async () => {

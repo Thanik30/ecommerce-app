@@ -163,6 +163,12 @@
 
     async function handleCreateCourse(e) {
         e.preventDefault();
+        
+        if (!authToken) {
+            openAuthModal('login');
+            return;
+        }
+
         const btn = document.getElementById('submitCourseBtn');
         btn.disabled = true;
         btn.textContent = 'กำลังอัปโหลดไฟล์วิดีโอและบันทึกข้อมูล...';
@@ -184,9 +190,11 @@
         try {
             const res = await fetch('/api/products', {
                 method: 'POST',
-                headers: { 'Accept': 'application/json' }, // ลบ Authorization
-                body: formData,
-                credentials: 'include' // เพิ่มการส่ง Cookie
+                headers: { 
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${authToken}` // ส่ง Token ไปด้วย
+                }, 
+                body: formData
             });
             const data = await res.json();
             if (!res.ok) {
@@ -205,12 +213,17 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-        const user = await fetchMemberProfile();
-        if (!user || user.role !== 'tutor') {
-            window.location.href = '/apply-tutor';
-            return;
+        // รอให้ตัวแปร currentUser พร้อมจาก app.blade.php
+        if (currentUser) {
+            if (currentUser.role !== 'tutor') {
+                window.location.href = '/apply-tutor';
+                return;
+            }
+            const alias = (currentUser.meta && currentUser.meta.tutor_alias) ? currentUser.meta.tutor_alias : currentUser.name;
+            const dept = (currentUser.meta && currentUser.meta.department) ? currentUser.meta.department : (currentUser.address || 'สาขาวิศวกรรมคอมพิวเตอร์');
+            document.getElementById('createCourseTutorPreview').textContent = `${alias} (${dept})`;
         }
-        document.getElementById('createCourseTutorPreview').textContent = `${user.tutor_alias || user.name} (${user.department || 'สาขาวิศวกรรมคอมพิวเตอร์'})`;
+        
         const params = new URLSearchParams(window.location.search);
         if (params.get('sku')) {
             document.getElementById('newCourseSku').value = params.get('sku');

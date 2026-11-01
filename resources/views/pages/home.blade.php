@@ -81,7 +81,6 @@
     async function fetchCourses() {
         const res = await fetch('/api/products', { 
             headers: { 'Accept': 'application/json' },
-            credentials: 'include' // เพิ่มบรรทัดนี้
         });
         const json = await res.json();
         allCourses = json.data || [];

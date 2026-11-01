@@ -40,7 +40,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // 2. เข้าสู่ระบบ (อัปเดตเพื่อใช้ HttpOnly Cookie)
+    // 2. เข้าสู่ระบบ (กลับมาใช้ระบบ Bearer Token)
     public function login(Request $request)
     {
         $request->validate([
@@ -56,17 +56,14 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // สร้าง Token
         $token = $user->createToken('auth_token')->plainTextToken;
-
-        // สร้าง HttpOnly Cookie (อายุ 1 วัน = 1440 นาที)
-        // พารามิเตอร์: ชื่อ, ค่า, เวลา(นาที), path, domain, secure(HTTPS เท่านั้น), httpOnly
-        $cookie = cookie('auth_token', $token, 1440, '/', null, env('APP_ENV') === 'production', true);
 
         return response()->json([
             'message' => 'เข้าสู่ระบบสำเร็จ!',
-            'user' => $user
-            // ไม่ส่ง 'token' กลับไปเป็น Text ใน JSON อีกต่อไป เพื่อความปลอดภัย
-        ])->withCookie($cookie);
+            'user' => $user,
+            'token' => $token // ส่ง Token กลับไปให้ Frontend เก็บลง LocalStorage
+        ]);
     }
 
     // 3. ดึงข้อมูลโปรไฟล์ปัจจุบัน
@@ -157,17 +154,14 @@ class AuthController extends Controller
         ]);
     }
 
-    // 6. ออกจากระบบ (Logout) และล้าง Cookie
+    // 6. ออกจากระบบ (Logout)
     public function logout(Request $request)
     {
-        // 1. ทำลาย Token ปัจจุบันในฐานข้อมูล เพื่อไม่ให้เอาไปใช้ซ้ำได้อีก
+        // ทำลาย Token ปัจจุบันทิ้งจากฐานข้อมูล
         $request->user()->currentAccessToken()->delete();
-
-        // 2. สร้าง Cookie เปล่าๆ เพื่อไปลบทับ Cookie เดิมในเบราว์เซอร์
-        $cookie = cookie()->forget('auth_token');
 
         return response()->json([
             'message' => 'ออกจากระบบสำเร็จ'
-        ])->withCookie($cookie);
+        ]);
     }
 }
