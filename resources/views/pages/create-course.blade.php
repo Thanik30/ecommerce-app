@@ -79,36 +79,43 @@
             </div>
 
             <!-- โซนอัปโหลดไฟล์คลิปวิดีโอ + รูปปก + ลิงก์ PDF -->
-            <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-200 space-y-4">
-                <h3 class="font-bold text-xs uppercase tracking-wider text-academic-blue">ไฟล์สื่อการสอน (คลิปวิดีโอ + รูปปก + ลิงก์เอกสาร PDF)</h3>
+            <!-- โซนอัปโหลดไฟล์คลิปวิดีโอ + รูปปก + ลิงก์ PDF -->
+        <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-200 space-y-4">
+            <h3 class="font-bold text-xs uppercase tracking-wider text-academic-blue">ไฟล์สื่อการสอน (คลิปวิดีโอ + รูปปก + ลิงก์เอกสาร PDF)</h3>
 
-                <!-- 1. อัปโหลดไฟล์คลิปวิดีโอการสอน -->
-                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
-                    <label class="block text-xs font-bold text-slate-800">🎬 อัปโหลดไฟล์คลิปวิดีโอการสอน (.mp4, .webm, .mov) *</label>
-                    <input id="newCourseVideoFile" type="file" accept="video/mp4,video/webm,video/quicktime,video/ogg" required onchange="previewCourseVideo(event)" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-emerald-600 file:text-white file:font-semibold cursor-pointer">
-                    <video id="videoPreviewPlayer" controls class="hidden w-full max-h-48 rounded-lg bg-black mt-2"></video>
+            <!-- ส่วนอัปโหลดหลายคลิปแยกบทเรียน -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3" id="lessonsContainer">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold text-slate-800">🎬 อัปโหลดคลิปวิดีโอการสอน (แยกทีละบท) *</label>
+                    <button type="button" onclick="addLessonRow()" class="text-xs bg-academic-blue text-white px-3 py-1.5 rounded-lg cursor-pointer">+ เพิ่มบทเรียน</button>
                 </div>
+                <!-- แถวสำหรับใส่บทเรียนแรก -->
+                <div class="lesson-row flex flex-col sm:flex-row gap-2 items-center bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    <input type="text" name="lesson_titles[]" placeholder="ชื่อบทเรียน เช่น บทที่ 1..." required class="w-full sm:w-1/3 px-3 py-2 text-xs rounded-lg border border-slate-300">
+                    <input type="file" name="lesson_videos[]" accept="video/mp4,video/webm,video/ogg" required class="w-full sm:w-2/3 text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-emerald-600 file:text-white file:font-semibold">
+                </div>
+         </div>
 
-                <!-- 2. อัปโหลดไฟล์รูปปกคอร์ส -->
-                <div class="bg-white p-4 rounded-xl border border-slate-200 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
-                    <div class="sm:col-span-8">
-                        <label class="block text-xs font-bold text-slate-800 mb-1">🖼️ อัปโหลดไฟล์รูปปกคอร์สเรียน (.jpg, .png, .webp) *</label>
-                        <input id="newCourseCoverFile" type="file" accept="image/*" required onchange="previewCourseCover(event)" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-academic-blue file:text-white file:font-semibold cursor-pointer">
-                    </div>
-                    <div class="sm:col-span-4 flex justify-center">
-                        <div class="w-28 h-20 rounded-lg border border-slate-300 bg-slate-50 overflow-hidden flex items-center justify-center text-[11px] text-slate-400">
-                            <img id="coverPreviewImg" src="" class="hidden w-full h-full object-cover">
-                            <span id="coverPreviewPlaceholder">ตัวอย่างปก</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. ลิงก์ดาวน์โหลดเอกสาร PDF -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-800 mb-1">📄 ลิงก์ดาวน์โหลดเอกสารการเรียน (ไฟล์ PDF เช่น Google Drive) *</label>
-                    <input id="newCoursePdfUrl" type="url" required placeholder="https://drive.google.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-academic-blue focus:outline-none">
-                </div>
+    <!-- 2. อัปโหลดไฟล์รูปปกคอร์ส -->
+    <div class="bg-white p-4 rounded-xl border border-slate-200 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+        <div class="sm:col-span-8">
+            <label class="block text-xs font-bold text-slate-800 mb-1">🖼️ อัปโหลดไฟล์รูปปกคอร์สเรียน (.jpg, .png, .webp) *</label>
+            <input id="newCourseCoverFile" type="file" accept="image/*" required onchange="previewCourseCover(event)" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-academic-blue file:text-white file:font-semibold cursor-pointer">
+        </div>
+        <div class="sm:col-span-4 flex justify-center">
+            <div class="w-28 h-20 rounded-lg border border-slate-300 bg-slate-50 overflow-hidden flex items-center justify-center text-[11px] text-slate-400">
+                <img id="coverPreviewImg" src="" class="hidden w-full h-full object-cover">
+                <span id="coverPreviewPlaceholder">ตัวอย่างปก</span>
             </div>
+        </div>
+    </div>
+
+    <!-- 3. ลิงก์ดาวน์โหลดเอกสาร PDF -->
+    <div>
+        <label class="block text-xs font-bold text-slate-800 mb-1">📄 ลิงก์ดาวน์โหลดเอกสารการเรียน (ไฟล์ PDF เช่น Google Drive) *</label>
+        <input id="newCoursePdfUrl" type="url" required placeholder="https://drive.google.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-academic-blue focus:outline-none">
+    </div>
+</div>
 
             <div class="pt-3 flex gap-3">
                 <a href="/my-courses" class="w-1/3 py-3 rounded-xl border border-slate-300 text-slate-600 font-semibold text-center">ยกเลิก</a>
@@ -123,6 +130,18 @@
 
 @section('scripts')
 <script>
+    function addLessonRow() {
+        const container = document.getElementById('lessonsContainer');
+        const row = document.createElement('div');
+        row.className = 'lesson-row flex flex-col sm:flex-row gap-2 items-center bg-white p-2.5 rounded-lg border border-slate-200 mt-2';
+        row.innerHTML = `
+            <input type="text" name="lesson_titles[]" placeholder="ชื่อบทเรียน เช่น บทที่ 2..." required class="w-full sm:w-1/3 px-3 py-2 text-xs rounded-lg border border-slate-300">
+            <input type="file" name="lesson_videos[]" accept="video/mp4,video/webm,video/ogg" required class="w-full sm:w-2/3 text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-emerald-600 file:text-white file:font-semibold">
+            <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 font-bold px-2">✕</button>
+        `;
+        container.appendChild(row);
+    }
+
     function updateAutoCategoryBadge(skuVal) {
         const prefix = skuVal.trim().substring(0, 3);
         const labelEl = document.getElementById('autoDetectedCategoryText');
@@ -163,15 +182,9 @@
 
     async function handleCreateCourse(e) {
         e.preventDefault();
-        
-        if (!authToken) {
-            openAuthModal('login');
-            return;
-        }
-
         const btn = document.getElementById('submitCourseBtn');
-        btn.disabled = true;
-        btn.textContent = 'กำลังอัปโหลดไฟล์วิดีโอและบันทึกข้อมูล...';
+        btn.disabled = true; 
+        btn.textContent = '⏳ กำลังอัปโหลดไฟล์วิดีโอและบันทึกข้อมูล... (อาจใช้เวลาหลายนาที)';
 
         const formData = new FormData();
         formData.append('sku', document.getElementById('newCourseSku').value.trim());
@@ -184,29 +197,43 @@
         formData.append('description', document.getElementById('newCourseDesc').value.trim());
         formData.append('syllabus', document.getElementById('newCourseSyllabus').value.trim());
         formData.append('pdf_url', document.getElementById('newCoursePdfUrl').value.trim());
-        formData.append('cover_image', document.getElementById('newCourseCoverFile').files[0]);
-        formData.append('course_video', document.getElementById('newCourseVideoFile').files[0]);
+    
+        const coverInput = document.getElementById('newCourseCoverFile');
+        if (coverInput && coverInput.files.length > 0) {
+            formData.append('cover_image', coverInput.files[0]);
+        }
+
+        // ดึงไฟล์คลิปบทเรียนหลายๆ ไฟล์ อย่างระมัดระวังเพื่อไม่ให้ติด Error Null
+        const titleInputs = document.querySelectorAll('input[name="lesson_titles[]"]');
+        const videoInputs = document.querySelectorAll('input[name="lesson_videos[]"]');
+    
+        for (let i = 0; i < titleInputs.length; i++) {
+            if (titleInputs[i].value && videoInputs[i].files.length > 0) {
+                formData.append('lesson_titles[]', titleInputs[i].value);
+                formData.append('lesson_videos[]', videoInputs[i].files[0]);
+            }
+        }
 
         try {
             const res = await fetch('/api/products', {
                 method: 'POST',
-                headers: { 
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${authToken}` // ส่ง Token ไปด้วย
-                }, 
+                headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` },
                 body: formData
             });
             const data = await res.json();
+        
             if (!res.ok) {
-                showToast(data.message || 'อัปโหลดไม่สำเร็จ กรุณาเช็คขนาดไฟล์หรือสิทธิ์โฟลเดอร์', true);
+                showToast(data.message || 'อัปโหลดล้มเหลว กรุณาตรวจสอบไฟล์', true);
                 btn.disabled = false;
                 btn.textContent = '🚀 อัปโหลดคลิปและวางขายคอร์สเรียน';
                 return;
             }
-            showToast('🎉 อัปโหลดคลิปวิดีโอและเปิดขายคอร์สเรียนสำเร็จ!');
-            setTimeout(() => { window.location.href = '/my-courses'; }, 900);
+        
+            showToast('🎉 อัปโหลดคลิปแบบแยกบทเรียน และวางขายสำเร็จ!');
+            setTimeout(() => { window.location.href = '/my-courses'; }, 1000);
+        
         } catch (err) {
-            showToast('เกิดข้อผิดพลาดในการอัปโหลด', true);
+            showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่', true);
             btn.disabled = false;
             btn.textContent = '🚀 อัปโหลดคลิปและวางขายคอร์สเรียน';
         }

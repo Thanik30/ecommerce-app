@@ -27,4 +27,9 @@ class Product extends Model
     {
         return $this->hasMany(Review::class)->latest();
     }
+
+    public function lessons()
+    {
+        return $this->hasMany(CourseLesson::class)->orderBy('order_num');
+    }
 }

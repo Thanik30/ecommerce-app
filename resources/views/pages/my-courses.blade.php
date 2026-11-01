@@ -54,7 +54,7 @@
         <div class="p-6 space-y-5">
             <!-- ตัวเล่นวิดีโอจริง -->
             <div class="aspect-video rounded-xl bg-black overflow-hidden border border-slate-800">
-                <video id="realCourseVideoElement" controls class="w-full h-full object-contain bg-black">
+                <video id="realCourseVideoElement" controls preload="auto" class="w-full h-full object-contain bg-black">
                     <source id="realCourseVideoSource" src="" type="video/mp4">
                     เบราว์เซอร์ของคุณไม่รองรับการเล่นวิดีโอ
                 </video>
