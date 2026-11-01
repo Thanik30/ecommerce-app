@@ -57,7 +57,6 @@
     <!-- NAVBAR หลัก -->
     <header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-2xs">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-            <!-- โลโก้ -->
             <a href="/" class="flex items-center gap-2.5 text-left shrink-0">
                 <div class="w-9 h-9 rounded-lg bg-academic-blue flex items-center justify-center text-white font-bold text-lg">E</div>
                 <div>
@@ -66,7 +65,6 @@
                 </div>
             </a>
 
-            <!-- เมนูหลักตรงกลาง (Desktop) -->
             <nav class="hidden lg:flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
                 <a href="/" class="whitespace-nowrap px-3.5 py-1.5 rounded-lg text-sm font-medium transition {{ request()->is('/') || request()->is('courses/*') ? 'bg-white text-academic-blue shadow-xs' : 'text-slate-600 hover:text-slate-900' }}" data-i18n="nav_search_courses">
                     ค้นหาคอร์สเรียน
@@ -85,7 +83,6 @@
                 </button>
             </nav>
 
-            <!-- ปุ่มด้านขวา (เปลี่ยนภาษา TH/EN + ตะกร้า + โปรไฟล์) -->
             <div class="flex items-center gap-2 shrink-0">
                 <button onclick="toggleLanguage()" id="langSwitcherBtn" class="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-academic-blue bg-slate-50 text-slate-700 text-xs font-bold transition cursor-pointer">
                     🌐 TH
@@ -105,7 +102,6 @@
                     </button>
                 </div>
 
-                <!-- แสดงรูปโปรไฟล์ที่จำค่าจาก Database และคลิกไปหน้า /profile ได้ทันที -->
                 <div id="userActions" class="hidden items-center gap-1.5">
                     <a href="/profile" class="whitespace-nowrap inline-flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-medium transition border border-slate-200" title="แก้ไขโปรไฟล์">
                         <img id="navUserAvatar" src="https://ui-avatars.com/api/?name=U&background=0066FF&color=fff" alt="Avatar" class="w-7 h-7 rounded-full object-cover border border-white shadow-2xs">
@@ -119,7 +115,6 @@
             </div>
         </div>
 
-        <!-- แถบเมนูสำหรับจอมือถือ (Responsive) -->
         <div class="lg:hidden border-t border-slate-100 px-3 py-2 flex items-center justify-around bg-slate-50 text-xs font-medium overflow-x-auto gap-2">
             <a href="/" class="whitespace-nowrap py-1 text-academic-blue font-semibold" data-i18n="nav_search_courses">ค้นหาคอร์สเรียน</a>
             <a href="/my-courses" class="whitespace-nowrap py-1 text-slate-600" data-i18n="nav_my_courses">คอร์สของฉัน</a>
@@ -129,12 +124,10 @@
         </div>
     </header>
 
-    <!-- เนื้อหาของแต่ละหน้าจะถูกแทรกตรงนี้ -->
     <main class="flex-1 flex flex-col">
         @yield('content')
     </main>
 
-    <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 mt-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-500">
             <div class="flex items-center gap-2.5">
@@ -149,9 +142,7 @@
         </div>
     </footer>
 
-    <!-- ==========================================================
-         DRAWER: ตะกร้าคอร์สเรียน (มีรูปปก + ชื่อติวเตอร์ + ปุ่มลบ + ใช้หลายโค้ดต่อกันได้)
-         ========================================================== -->
+    <!-- DRAWER: ตะกร้าคอร์สเรียน -->
     <div id="cartDrawer" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs justify-end">
         <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between">
             <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
@@ -291,11 +282,12 @@
     <!-- กล่องแจ้งเตือน Toast -->
     <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden max-w-sm px-5 py-3 rounded-xl shadow-lg text-white font-medium text-sm transition-all"></div>
 
-    <!-- ==========================================================
-         GLOBAL JAVASCRIPT (ใช้ร่วมกันทุกหน้า + แปลภาษา TH/EN + จำค่าโปรไฟล์)
-         ========================================================== -->
     <script>
-        // 1. ไม่มี authToken แล้ว
+        // เช็ค Token ให้ชัวร์ว่าไม่ใช่ค่าขยะ
+        let rawToken = localStorage.getItem('auth_token');
+        let authToken = (rawToken === 'undefined' || rawToken === 'null' || !rawToken) ? null : rawToken;
+        if (!authToken) localStorage.removeItem('auth_token');
+
         let currentUser = JSON.parse(localStorage.getItem('cached_user') || 'null');
         let currentLang = localStorage.getItem('app_lang') || 'th';
         let purchasedCourseIds = new Set();
@@ -482,11 +474,9 @@
             const userDiv = document.getElementById('userActions');
             const btnApplyTutor = document.getElementById('navBtnApplyTutor');
             const btnCreateCourse = document.getElementById('navBtnCreateCourse');
-            const mobileApplyTutor = document.getElementById('mobileBtnApplyTutor');
-            const mobileCreateCourse = document.getElementById('mobileBtnCreateCourse');
             const navTutorBadge = document.getElementById('navTutorBadge');
 
-            if (currentUser) {
+            if (authToken && currentUser) {
                 const displayName = currentUser.tutor_alias || currentUser.name || 'นักศึกษา';
                 const avatarUrl = currentUser.avatar_url || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(displayName) + '&background=0066FF&color=fff&bold=true');
 
@@ -502,14 +492,10 @@
                 if (currentUser.role === 'tutor') {
                     if (btnApplyTutor) btnApplyTutor.classList.add('hidden');
                     if (btnCreateCourse) btnCreateCourse.classList.remove('hidden');
-                    if (mobileApplyTutor) mobileApplyTutor.classList.add('hidden');
-                    if (mobileCreateCourse) mobileCreateCourse.classList.remove('hidden');
                     if (navTutorBadge) navTutorBadge.classList.remove('hidden');
                 } else {
                     if (btnApplyTutor) btnApplyTutor.classList.remove('hidden');
                     if (btnCreateCourse) btnCreateCourse.classList.add('hidden');
-                    if (mobileApplyTutor) mobileApplyTutor.classList.remove('hidden');
-                    if (mobileCreateCourse) mobileCreateCourse.classList.add('hidden');
                     if (navTutorBadge) navTutorBadge.classList.add('hidden');
                 }
             } else {
@@ -525,15 +511,13 @@
         }
 
         async function fetchMemberProfile() {
+            if (!authToken) return null;
             try {
                 const res = await fetch('/api/member-info', {
-                    headers: { 'Accept': 'application/json' },
-                    credentials: 'include'
+                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
                 });
                 if (!res.ok) {
-                    currentUser = null;
-                    localStorage.removeItem('cached_user');
-                    updateAuthUI();
+                    logout(false);
                     return null;
                 }
                 const data = await res.json();
@@ -547,11 +531,10 @@
         }
 
         async function fetchPurchasedIds() {
-            if (!currentUser) return;
+            if (!authToken) return;
             try {
                 const res = await fetch('/api/my-courses', {
-                    headers: { 'Accept': 'application/json' },
-                    credentials: 'include'
+                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -560,7 +543,6 @@
             } catch (err) {}
         }
 
-        // ระบบ Login / Register / Logout
         function openAuthModal(tab = 'login') {
             switchAuthTab(tab);
             document.getElementById('authModal').classList.remove('hidden');
@@ -596,8 +578,7 @@
                 const res = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ email, password }),
-                    credentials: 'include' // <--- จุดสำคัญ: รับ-ส่ง Cookie อัตโนมัติ
+                    body: JSON.stringify({ email, password })
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -605,7 +586,9 @@
                     return;
                 }
                 
-                // ไม่มีการเก็บ auth_token ลง LocalStorage แล้ว!
+                authToken = data.token;
+                localStorage.setItem('auth_token', authToken);
+                
                 currentUser = data.user;
                 localStorage.setItem('cached_user', JSON.stringify(currentUser));
                 
@@ -638,8 +621,7 @@
                 const res = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(payload),
-                    credentials: 'include'
+                    body: JSON.stringify(payload)
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -653,14 +635,16 @@
         }
 
         async function logout(notify = true) {
-            try {
-                await fetch('/api/logout', { 
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json' },
-                    credentials: 'include' 
-                });
-            } catch (err) {}
+            if (authToken) {
+                try {
+                    await fetch('/api/logout', { 
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
+                    });
+                } catch (err) {}
+            }
 
+            authToken = null;
             currentUser = null;
             purchasedCourseIds.clear();
             localStorage.clear();
@@ -670,9 +654,8 @@
             setTimeout(() => { window.location.reload(); }, 800);
         }
 
-        // ระบบตะกร้าคอร์สเรียน (เอาคำว่า Authorization: Bearer ${authToken} ออกทั้งหมด)
         async function addToCart(productId) {
-            if (!currentUser) {
+            if (!authToken) {
                 showToast('กรุณาเข้าสู่ระบบก่อนสั่งซื้อคอร์สเรียน', true);
                 openAuthModal('login');
                 return;
@@ -685,9 +668,8 @@
             try {
                 const res = await fetch('/api/cart', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ product_id: productId, quantity: 1 }),
-                    credentials: 'include'
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                    body: JSON.stringify({ product_id: productId, quantity: 1 })
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -703,12 +685,11 @@
         }
 
         async function removeFromCart(itemId) {
-            if (!currentUser) return;
+            if (!authToken) return;
             try {
                 const res = await fetch(`/api/cart/${itemId}`, {
                     method: 'DELETE',
-                    headers: { 'Accept': 'application/json' },
-                    credentials: 'include'
+                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
                 });
                 if (res.ok) {
                     showToast('🗑️ ลบคอร์สเรียนออกจากตะกร้าเรียบร้อยแล้ว');
@@ -718,11 +699,10 @@
         }
 
         async function fetchCart() {
-            if (!currentUser) return;
+            if (!authToken) return;
             try {
                 const res = await fetch('/api/cart', {
-                    headers: { 'Accept': 'application/json' },
-                    credentials: 'include'
+                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
                 });
                 const data = await res.json();
                 renderCart(data);
@@ -799,7 +779,7 @@
         }
 
         function openCartDrawer() {
-            if (!currentUser) {
+            if (!authToken) {
                 showToast('กรุณาเข้าสู่ระบบเพื่อดูตะกร้าคอร์สเรียน', true);
                 openAuthModal('login');
                 return;
@@ -823,9 +803,8 @@
             try {
                 const res = await fetch('/api/apply-coupon', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ code }),
-                    credentials: 'include'
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                    body: JSON.stringify({ code })
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -842,8 +821,7 @@
             try {
                 const res = await fetch('/api/checkout', {
                     method: 'POST',
-                    headers: { 'Accept': 'application/json' },
-                    credentials: 'include'
+                    headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${authToken}` }
                 });
                 const data = await res.json();
                 if (!res.ok) {
@@ -873,7 +851,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             applyLanguageUI();
             updateAuthUI();
-            if (currentUser) {
+            if (authToken) {
                 await fetchMemberProfile();
                 await fetchPurchasedIds();
                 await fetchCart();

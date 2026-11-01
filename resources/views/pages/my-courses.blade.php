@@ -80,11 +80,10 @@
     let purchasedCourses = [];
 
     async function loadMyCoursesPage() {
-        // ให้ฟังก์ชันส่วนกลางยืนยันตัวตนด้วย Cookie 
+        // ให้ฟังก์ชันส่วนกลางยืนยันตัวตนด้วย Token
         await fetchMemberProfile();
         
-        // เช็คจาก currentUser แทน authToken
-        if (!currentUser) {
+        if (!currentUser || !authToken) {
             window.location.href = '/';
             return;
         }
@@ -110,8 +109,13 @@
         }
 
         const [prodRes, myRes] = await Promise.all([
-            fetch('/api/products', { headers: { 'Accept': 'application/json' }, credentials: 'include' }),
-            fetch('/api/my-courses', { headers: { 'Accept': 'application/json' }, credentials: 'include' }) // ลบ Authorization
+            fetch('/api/products', { headers: { 'Accept': 'application/json' } }), // /products ไม่ต้องใช้ Token เพราะเป็น public route
+            fetch('/api/my-courses', { 
+                headers: { 
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${authToken}` // ส่ง Token ไปให้ API
+                } 
+            }) 
         ]);
 
         const prodJson = await prodRes.json();
@@ -218,7 +222,7 @@
                                 <span class="absolute top-2.5 right-2.5 px-2.5 py-1 rounded bg-emerald-600 text-white text-[11px] font-semibold">วางขายแล้ว</span>
                             </div>
                             <h3 class="font-bold text-slate-900 text-sm sm:text-base line-clamp-2">${course.name}</h3>
-                            <p class="text-xs text-slate-500">⏱ ${meta.hoursFormatted} • ราคา ${Number(course.price).toLocaleString()} บาท</p>
+                            <p class="text-xs text-slate-500">⏱ ${meta.hoursFormatted} ราคา ${Number(course.price).toLocaleString()} บาท</p>
                             <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-500">
                                 🔒 คอร์สที่วางขายแล้วต้องแจ้งแอดมินเพื่อแก้ไขเท่านั้น
                             </div>

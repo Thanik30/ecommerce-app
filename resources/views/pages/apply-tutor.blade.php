@@ -93,7 +93,7 @@
 
     async function handleTutorApplication(e) {
         e.preventDefault();
-        if (!currentUser) {
+        if (!authToken) {
             openAuthModal('login');
             return;
         }
@@ -113,9 +113,11 @@
 
         const res = await fetch('/api/apply-tutor', {
             method: 'POST',
-            headers: { 'Accept': 'application/json' },
-            body: formData,
-            credentials: 'include'
+            headers: { 
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${authToken}` // ส่ง Token ไปให้ API
+            },
+            body: formData
         });
         const data = await res.json();
         if (!res.ok) {
