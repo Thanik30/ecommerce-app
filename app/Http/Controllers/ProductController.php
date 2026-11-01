@@ -28,7 +28,6 @@ class ProductController extends Controller
             return response()->json(['message' => 'เฉพาะติวเตอร์เท่านั้นที่อัปโหลดคอร์สได้'], 403);
         }
 
-        // เช็คการแนบไฟล์บทเรียนที่เป็น Array
         $request->validate([
             'sku' => 'required|digits:6',
             'name' => 'required|string|max:255',
@@ -46,16 +45,29 @@ class ProductController extends Controller
         ]);
 
         $sku = trim($request->sku);
-        $category = Category::where('name', 'like', "%(" . substr($sku, 0, 3) . "xxx)%")->first() ?: Category::first();
+        $prefix = substr($sku, 0, 3);
 
-        // 1. เก็บรูปปก
+        // 1. ลองค้นหาหมวดหมู่จาก 3 รหัสหน้าก่อน (เช่น 259)
+        $category = Category::where('name', 'like', "%{$prefix}%")->first();
+
+        // 2. ถ้าไม่เจอหมวดวิชานี้ ให้ปัดตกไปอยู่ "หมวดหมู่อื่นๆ" ทันที
+        if (!$category) {
+            $category = Category::where('name', 'like', '%อื่นๆ%')->first();
+    
+            // ถ้าในฐานข้อมูลยังไม่มีหมวดอื่นๆ ให้สร้างขึ้นมาใหม่เลย
+            if (!$category) {
+                $category = Category::create([
+                    'name' => 'หมวดหมู่อื่นๆ (Others)'
+                ]);
+            }
+        }
+
         $imageUrl = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=900&q=80';
         if ($request->hasFile('cover_image')) {
             $imgPath = $request->file('cover_image')->store('courses', 'public');
             $imageUrl = '/storage/' . $imgPath;
         }
 
-        // 2. สร้างคอร์สหลัก
         $tutorAlias = $user->tutor_alias ?: $user->name;
         $tutorDept = $user->department ?: 'คณะวิศวกรรมศาสตร์';
         
@@ -90,11 +102,8 @@ class ProductController extends Controller
             'stock_quantity' => 999,
         ]);
 
-        // 3. วนลูปเก็บไฟล์วิดีโอแยกทีละบทเรียน
         $titles = $request->input('lesson_titles');
         $videos = $request->file('lesson_videos');
-
-        // จัดการเรียงหัวข้อให้เป็น Syllabus อัตโนมัติ (เอาไปโชว์ในหน้ารายละเอียดคอร์ส)
         $autoSyllabus = "";
         
         foreach ($titles as $index => $title) {
@@ -105,14 +114,13 @@ class ProductController extends Controller
                 
                 CourseLesson::create([
                     'product_id' => $product->id,
-                    'title' => $title, // เก็บเฉพาะชื่อหัวข้อที่ติวเตอร์ตั้ง
+                    'title' => $title,
                     'video_url' => '/storage/' . $vidPath,
                     'order_num' => $index + 1
                 ]);
             }
         }
 
-        // บันทึก Syllabus กลับไปที่ตาราง Product
         $product->syllabus = trim($autoSyllabus);
         $product->save();
 
@@ -122,7 +130,6 @@ class ProductController extends Controller
         ], 201);
     }
 
-    // สตรีมวิดีโอ (เพิ่ม Headers เพื่อให้โหลดไฟล์รวดเดียว/กอคลิปได้เนียนๆ)
     public function streamVideo($lessonId)
     {
         $lesson = CourseLesson::findOrFail($lessonId);
@@ -133,11 +140,10 @@ class ProductController extends Controller
             abort(404, 'ไม่พบไฟล์วิดีโอ');
         }
 
-        // ส่งไฟล์กลับไปพร้อมอนุญาตให้ Browser โหลดได้อิสระ
         return response()->file($fullPath, [
             'Accept-Ranges' => 'bytes',
             'Content-Type' => mime_content_type($fullPath),
-            'Cache-Control' => 'no-cache, must-revalidate'
+            'Cache-Control' => 'public, max-age=2592000'
         ]);
     }
 
@@ -147,7 +153,14 @@ class ProductController extends Controller
         if (!$user || $user->role !== 'tutor') {
             return response()->json(['message' => 'เฉพาะติวเตอร์เท่านั้น'], 403);
         }
-        $request->validate(['code' => 'required|string|unique:coupons,code', 'discount_value' => 'required|numeric', 'discount_type' => 'required|string']);
+        
+        // 💡 แก้ไข: เพิ่ม min:1 ป้องกันการสร้างโค้ดติดลบ
+        $request->validate([
+            'code' => 'required|string|unique:coupons,code',
+            'discount_value' => 'required|numeric|min:1',
+            'discount_type' => 'required|string'
+        ]);
+        
         Coupon::create([
             'code' => strtoupper($request->code),
             'discount_type' => $request->discount_type,
