@@ -59,15 +59,6 @@ class DatabaseSeeder extends Seeder
             'role' => 'tutor'
         ]);
 
-        // 3. หมวดหมู่สาขาวิชาในคณะวิศวกรรมศาสตร์
-        $catCore  = Category::create(['name' => 'วิชาแกนวิศวกรรมพื้นฐาน (259xxx)']);
-        $catCivil = Category::create(['name' => 'วิศวกรรมโยธา (251xxx)']);
-        $catEe    = Category::create(['name' => 'วิศวกรรมไฟฟ้า (252xxx)']);
-        $catMech  = Category::create(['name' => 'วิศวกรรมเครื่องกล (254xxx)']);
-        $catIe    = Category::create(['name' => 'วิศวกรรมอุตสาหการ (255xxx)']);
-        $catCpe   = Category::create(['name' => 'วิศวกรรมคอมพิวเตอร์ (261xxx)']);
-        $catMath  = Category::create(['name' => 'คณิตศาสตร์วิศวกรรม (206xxx)']);
-
         $sampleVideo = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
         $samplePdf   = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
 

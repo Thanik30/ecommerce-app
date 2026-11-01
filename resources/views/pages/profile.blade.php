@@ -49,7 +49,7 @@
             <div class="pt-3 flex gap-3">
                 <a href="/my-courses" class="w-1/3 py-3 rounded-xl border border-slate-300 text-slate-600 font-semibold text-center">ย้อนกลับ</a>
                 <button type="submit" class="w-2/3 py-3 rounded-xl bg-academic-blue hover:bg-academic-blueHover text-white font-semibold cursor-pointer">
-                    💾 บันทึกโปรไฟล์ลงฐานข้อมูล
+                    บันทึกโปรไฟล์
                 </button>
             </div>
         </form>
@@ -102,7 +102,7 @@
             localStorage.setItem('cached_user', JSON.stringify(currentUser));
             updateAuthUI();
             document.getElementById('profilePreviewAvatar').src = currentUser.avatar_url;
-            showToast('✓ บันทึกโปรไฟล์และรูปภาพลงตาราง users เรียบร้อยแล้ว!');
+            showToast('บันทึกโปรไฟล์เรียบร้อยแล้ว!');
         } catch (err) {
             showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', true);
         }
