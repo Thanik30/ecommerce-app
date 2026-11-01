@@ -98,7 +98,7 @@
         <section class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-6">
             <div class="bg-white border border-slate-200 rounded-2xl p-5 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <h2 class="text-base sm:text-lg font-bold text-slate-900">แยกตามสาขาวิชา (รหัสขึ้นต้น 3 หลัก)</h2>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900">แยกตามสาขาวิชา</h2>
                     <span id="courseCountText" class="text-xs text-slate-500 font-medium"></span>
                 </div>
                 <div id="categoryFilterBar" class="flex flex-wrap items-center gap-2"></div>

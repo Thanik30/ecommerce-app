@@ -9,7 +9,7 @@
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-8">
             <div class="max-w-3xl mx-auto text-center space-y-3.5">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-academic-blue text-xs font-semibold" data-i18n="hero_badge">
-                    เรียนพิเศษกับ ENGTutor.
+                    เรียนพิเศษกับ ENGTutor
                 </span>
                 <h1 class="text-xl sm:text-3xl font-bold text-slate-900" data-i18n="hero_title">
                     ค้นหาคอร์สติว
