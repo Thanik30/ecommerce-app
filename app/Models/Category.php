@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    // เพิ่มฟังก์ชันนี้เข้าไป เพื่อเชื่อมกับ Model Product
+    // อนุญาตให้บันทึกชื่อหมวดหมู่ลงตาราง categories
+    protected $fillable = ['name'];
+
+    // เชื่อมกับ Model Product (1 หมวดหมู่ มีได้หลายสินค้า)
     public function products()
     {
         return $this->hasMany(Product::class);
