@@ -145,11 +145,11 @@ class AuthController extends Controller
         $user->gpax = $request->gpax;
         $user->transcript_url = $request->transcript_url;
         $user->phone_number = $request->phone_number;
-        $user->role = 'tutor';
+        $user->tutor_status = 'pending'; 
         $user->save();
 
         return response()->json([
-            'message' => 'ยืนยันตัวตนสำเร็จ! คุณได้รับสิทธิ์เป็นติวเตอร์ในชื่อ "' . $user->tutor_alias . '" เรียบร้อยแล้ว',
+            'message' => 'ส่งข้อมูลสมัครติวเตอร์เรียบร้อยแล้ว กรุณารอแอดมินตรวจสอบและอนุมัติภายใน 24 ชม.',
             'user' => $user->fresh()
         ]);
     }

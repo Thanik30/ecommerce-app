@@ -11,10 +11,10 @@ use App\Models\Coupon;
 
 class OrderController extends Controller
 {
-    // คำนวณยอดรวมในตะกร้าใหม่พร้อมหักส่วนลดจากคูปองทั้งหมดที่ใส่ไว้
+    // ฟังก์ชันคำนวณยอดรวมตะกร้าใหม่ (รองรับโค้ดส่วนลดของติวเตอร์)
     private function recalculateOrderTotal(Order $order)
     {
-        $items = OrderItem::where('order_id', $order->id)->get();
+        $items = OrderItem::with('product')->where('order_id', $order->id)->get();
         $originalTotal = $items->sum(function ($item) {
             return $item->quantity * $item->price;
         });
@@ -29,14 +29,28 @@ class OrderController extends Controller
 
         foreach ($appliedCodes as $code) {
             $coupon = Coupon::where('code', $code)->where('is_active', true)->first();
-            if ($coupon && (!$coupon->min_purchase || $originalTotal >= $coupon->min_purchase)) {
-                if ($coupon->discount_type == 'percentage') {
-                    $discount = ($originalTotal * $coupon->discount_value) / 100;
-                } else {
-                    $discount = $coupon->discount_value;
+            if ($coupon) {
+                // คำนวณยอดเฉพาะวิชาที่เข้าเกณฑ์ (ถ้าติวเตอร์สร้างโค้ด จะลดแค่วิชาของติวเตอร์คนนั้น)
+                $eligibleTotal = 0;
+                foreach ($items as $item) {
+                    if ($coupon->owner_email) {
+                        if ($item->product && $item->product->owner_email === $coupon->owner_email) {
+                            $eligibleTotal += ($item->quantity * $item->price);
+                        }
+                    } else {
+                        $eligibleTotal += ($item->quantity * $item->price);
+                    }
                 }
-                $currentTotal = max(0, $currentTotal - $discount);
-                $validCodes[] = $code;
+
+                if ($eligibleTotal > 0 && (!$coupon->min_purchase || $originalTotal >= $coupon->min_purchase)) {
+                    if ($coupon->discount_type == 'percentage') {
+                        $discount = ($eligibleTotal * $coupon->discount_value) / 100;
+                    } else {
+                        $discount = $coupon->discount_value;
+                    }
+                    $currentTotal = max(0, $currentTotal - $discount);
+                    $validCodes[] = $code;
+                }
             }
         }
 
@@ -52,7 +66,6 @@ class OrderController extends Controller
         ];
     }
 
-    // 1. หยิบคอร์สเรียนใส่ตะกร้า
     public function addToCart(Request $request)
     {
         $request->validate([
@@ -63,7 +76,6 @@ class OrderController extends Controller
         $user = $request->user();
         $product = Product::findOrFail($request->product_id);
 
-        // ตรวจสอบว่าเคยซื้อคอร์สนี้ไปแล้วหรือยัง
         $alreadyPurchased = Order::where('user_id', $user->id)
             ->where('status', 'paid')
             ->whereHas('items', function ($query) use ($product) {
@@ -71,9 +83,7 @@ class OrderController extends Controller
             })->exists();
 
         if ($alreadyPurchased) {
-            return response()->json([
-                'message' => 'คุณได้ซื้อคอร์สเรียนวิชานี้ไปแล้ว สามารถเข้าเรียนได้ที่เมนู "คอร์สของฉัน"'
-            ], 400);
+            return response()->json(['message' => 'คุณได้ซื้อคอร์สเรียนวิชานี้ไปแล้ว'], 400);
         }
 
         $order = Order::firstOrCreate(
@@ -86,9 +96,7 @@ class OrderController extends Controller
                                  ->first();
 
         if ($existingItem) {
-            return response()->json([
-                'message' => 'คอร์สเรียนนี้อยู่ในตะกร้าของคุณเรียบร้อยแล้ว'
-            ], 400);
+            return response()->json(['message' => 'คอร์สเรียนนี้อยู่ในตะกร้าของคุณเรียบร้อยแล้ว'], 400);
         }
 
         OrderItem::create([
@@ -106,7 +114,6 @@ class OrderController extends Controller
         ]);
     }
 
-    // 2. ลบคอร์สเรียนออกจากตะกร้า (DELETE /api/cart/{itemId})
     public function removeFromCart(Request $request, $itemId)
     {
         $user = $request->user();
@@ -132,12 +139,9 @@ class OrderController extends Controller
             $this->recalculateOrderTotal($order);
         }
 
-        return response()->json([
-            'message' => 'ลบคอร์สเรียนออกจากตะกร้าเรียบร้อยแล้ว'
-        ]);
+        return response()->json(['message' => 'ลบคอร์สเรียนออกจากตะกร้าเรียบร้อยแล้ว']);
     }
 
-    // 3. ดูรายการคอร์สในตะกร้า (ดึงทั้ง images และ variants เพื่อแสดงรูปปกและชื่อติวเตอร์)
     public function viewCart(Request $request)
     {
         $user = $request->user();
@@ -166,14 +170,13 @@ class OrderController extends Controller
         ]);
     }
 
-    // 4. ใช้งานคูปองส่วนลด (กรอกโค้ดที่ 2 ต่อได้ แต่ห้ามใช้โค้ดตัวเดิมซ้ำ)
     public function applyCoupon(Request $request)
     {
         $request->validate(['code' => 'required|string']);
         $code = strtoupper(trim($request->code));
 
         $user = $request->user();
-        $order = Order::with('items')->where('user_id', $user->id)->where('status', 'pending')->first();
+        $order = Order::with('items.product')->where('user_id', $user->id)->where('status', 'pending')->first();
 
         if (!$order || $order->items->isEmpty()) {
             return response()->json(['message' => 'ไม่มีคอร์สเรียนในตะกร้า'], 404);
@@ -183,25 +186,16 @@ class OrderController extends Controller
             return $item->quantity * $item->price;
         });
 
-        // ดึงรายการโค้ดที่ใช้ไปแล้วในตะกร้านี้
         $appliedCodes = Cache::get("order_coupons_list_{$order->id}", []);
-        if (!is_array($appliedCodes)) {
-            $appliedCodes = [];
-        }
+        if (!is_array($appliedCodes)) $appliedCodes = [];
 
-        // ป้องกันการกดใช้โค้ดตัวเดิมซ้ำในตะกร้าเดียวกัน
         if (in_array($code, $appliedCodes)) {
-            return response()->json([
-                'message' => "คุณได้ใช้โค้ดส่วนลด {$code} ในคำสั่งซื้อนี้ไปแล้ว (สามารถกรอกโค้ดส่วนลดรหัสอื่นเพิ่มได้)"
-            ], 400);
+            return response()->json(['message' => "คุณได้ใช้โค้ดส่วนลด {$code} ในคำสั่งซื้อนี้ไปแล้ว"], 400);
         }
 
-        // ป้องกันการใช้โค้ดตัวเดิมซ้ำจากออเดอร์ในอดีต
         $userCouponKey = "user_{$user->id}_used_coupon_{$code}";
         if (Cache::has($userCouponKey)) {
-            return response()->json([
-                'message' => "บัญชีของคุณเคยใช้สิทธิ์โค้ดส่วนลด {$code} ในการสั่งซื้อครั้งก่อนไปแล้ว"
-            ], 400);
+            return response()->json(['message' => "บัญชีของคุณเคยใช้สิทธิ์โค้ดส่วนลด {$code} ไปแล้ว"], 400);
         }
 
         $coupon = Coupon::where('code', $code)->where('is_active', true)->first();
@@ -210,20 +204,32 @@ class OrderController extends Controller
             return response()->json(['message' => 'โค้ดส่วนลดไม่ถูกต้องหรือหมดอายุแล้ว'], 400);
         }
 
-        if ($coupon->min_purchase && $originalTotal < $coupon->min_purchase) {
-            return response()->json([
-                'message' => 'คูปองนี้ต้องมียอดสั่งซื้อรวมขั้นต่ำ ' . number_format($coupon->min_purchase) . ' บาท'
-            ], 400);
+        // ตรวจสอบว่ามีวิชาที่เข้าเกณฑ์ลดราคาหรือไม่
+        $eligibleTotal = 0;
+        foreach ($order->items as $item) {
+            if ($coupon->owner_email) {
+                if ($item->product && $item->product->owner_email === $coupon->owner_email) {
+                    $eligibleTotal += ($item->quantity * $item->price);
+                }
+            } else {
+                $eligibleTotal += ($item->quantity * $item->price);
+            }
         }
 
-        // เพิ่มโค้ดใหม่ต่อท้ายรายการโค้ดที่ใช้แล้ว และคำนวณราคารวมใหม่
+        if ($eligibleTotal == 0) {
+            return response()->json(['message' => 'โค้ดส่วนลดนี้ใช้ได้เฉพาะคอร์สของติวเตอร์เจ้าของโค้ดเท่านั้น'], 400);
+        }
+
+        if ($coupon->min_purchase && $originalTotal < $coupon->min_purchase) {
+            return response()->json(['message' => 'ยอดสั่งซื้อขั้นต่ำไม่ถึงเกณฑ์ที่กำหนด'], 400);
+        }
+
         $appliedCodes[] = $code;
         Cache::put("order_coupons_list_{$order->id}", $appliedCodes, now()->addHours(24));
-
         $summary = $this->recalculateOrderTotal($order);
 
         return response()->json([
-            'message' => "ใช้โค้ดส่วนลด {$code} สำเร็จ! (ใช้แล้วรวม " . count($summary['applied_coupons']) . " โค้ด)",
+            'message' => "ใช้โค้ดส่วนลด {$code} สำเร็จ!",
             'applied_coupons' => $summary['applied_coupons'],
             'original_total' => $summary['original_total'],
             'discount_applied' => $summary['discount_applied'],
@@ -231,7 +237,6 @@ class OrderController extends Controller
         ]);
     }
 
-    // 5. ยืนยันคำสั่งซื้อและชำระเงิน
     public function checkout(Request $request)
     {
         $user = $request->user();
@@ -241,7 +246,6 @@ class OrderController extends Controller
             return response()->json(['message' => 'ไม่สามารถทำรายการได้ ตะกร้าว่างเปล่า'], 400);
         }
 
-        // บันทึกประวัติว่าผู้ใช้นี้ได้ใช้โค้ดเหล่านี้ไปแล้วเมื่อชำระเงินสำเร็จ
         $appliedCodes = Cache::get("order_coupons_list_{$order->id}", []);
         if (is_array($appliedCodes)) {
             foreach ($appliedCodes as $code) {
@@ -254,12 +258,11 @@ class OrderController extends Controller
         Cache::forget("order_coupons_list_{$order->id}");
 
         return response()->json([
-            'message' => 'ชำระเงินสำเร็จ! คอร์สเรียนถูกเพิ่มไปยังเมนู "คอร์สของฉัน" เรียบร้อยแล้ว',
+            'message' => 'ชำระเงินสำเร็จ!',
             'order_id' => $order->id
         ]);
     }
 
-    // 6. ดึงรายการคอร์สที่ผู้ใช้ซื้อแล้ว
     public function myCourses(Request $request)
     {
         $user = $request->user();
