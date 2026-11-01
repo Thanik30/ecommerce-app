@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    // ปลดล็อคให้ระบบสร้างหมวดหมู่ "อื่นๆ" อัตโนมัติได้
-    protected $guarded = []; 
+    // อนุญาตให้บันทึกชื่อหมวดหมู่ลงตาราง categories
+    protected $fillable = ['name'];
+
+    // เชื่อมกับ Model Product (1 หมวดหมู่ มีได้หลายสินค้า)
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
